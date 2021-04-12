@@ -15,7 +15,8 @@ $err = "";
 
 if($_SERVER['REQUEST_METHOD']=="POST"){
     if(empty(trim($_POST['username'])) || empty(trim($_POST['password']))){
-        $username_err = "Please enter both username and password";
+        $err = "Please enter both username and password";
+        echo $err;
     }
     else{
         $username = trim($_POST['username']);
@@ -87,9 +88,8 @@ if(empty($err)){
     <hr>
     <form action="" method="post">
         <div class="mb-3">
-        <label for="inputEmail3" class="col-sm-2 col-form-label">Username</label>
-            <div class="col-sm-10">
-            <input type="text" class="form-control" name="username" id="inputEmail3">
+                <label for="inputUname" class="form-label">Username</label>
+                <input type="text" class="form-control" name="username" id="inputUname">
         </div>
         <div class="mb-3">
         <label for="inputPassword3" class="col-sm-2 col-form-label">Password</label>
