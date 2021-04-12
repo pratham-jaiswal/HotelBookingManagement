@@ -1,0 +1,39 @@
+.container{
+    width: 700px;
+    overflow: hidden;
+}
+
+.container input{
+    width: 100%;
+    border: solid 1px;
+}
+
+.container hr{
+    color: black;
+    height: 1.5px;
+}
+
+.container img{
+    width: 200px;
+    height: 200px;
+    
+}
+
+.container th{
+    border: 1px solid black;
+    border-right: none;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    padding-right: 30px;
+}
+.container td{
+    border: 1px solid black;
+    border-left: none;
+    text-align: right;
+    padding-right: 30px;
+}
+.container table{
+    width: 100%;
+    font-size: 6mm;
+}
