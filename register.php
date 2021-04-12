@@ -19,7 +19,8 @@ if($_SERVER['REQUEST_METHOD']=="POST"){
             $param_fname = trim($_POST['fname']);
             //Try to execute the statement
             if(mysqli_execute($stmt)){
-                mysqli_stmt_store_result($stmt);$fname = trim($_POST['fname']);
+                mysqli_stmt_store_result($stmt);
+                $fname = trim($_POST['fname']);
             }
             else{
                 echo "Something went wrong";
@@ -42,7 +43,8 @@ if($_SERVER['REQUEST_METHOD']=="POST"){
             $param_lname = trim($_POST['lname']);
             //Try to execute the statement
             if(mysqli_execute($stmt)){
-                mysqli_stmt_store_result($stmt);$lname = trim($_POST['lname']);
+                mysqli_stmt_store_result($stmt);
+                $lname = trim($_POST['lname']);
             }
             else{
                 echo "Something went wrong";
