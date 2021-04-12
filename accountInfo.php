@@ -8,7 +8,6 @@ if(!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true){
 else{
     $sql = "SELECT * FROM loginform where username='".$_SESSION['username']."'";
     $result = mysqli_query($conn, $sql);
-    $num = mysqli_num_rows($result);
     $row = mysqli_fetch_assoc($result);
 }
 ?>
