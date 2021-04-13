@@ -23,6 +23,13 @@ if($_SERVER['REQUEST_METHOD']=="POST"){
         $password = trim($_POST['password']);
     }
 }
+if(isset($_POST['forgotPassword'])){
+    session_start();
+    $_SESSION = array();
+    session_destroy();
+    header("location: forgotPassword.php");
+}
+else{
 
 if(empty($err)){
     $sql = "SELECT id, fname, lname, email, username, password FROM loginform WHERE username = ?";
@@ -39,17 +46,20 @@ if(empty($err)){
                     //Password is correct. Allow user to login
                     session_start();
                     $_SESSION["username"] = $username;
+                    $_SESSION["fname"] = $fname;
+                    $_SESSION["lname"] = $lname;
+                    $_SESSION["email"] = $email;
                     $_SESSION["id"] = $id;
                     $_SESSION["loggedin"] = true;
-
                     //Redirect the user to the accountInfo page
                     header("location: accountInfo.php");
                 }
             }
         }
     }
-    
 }
+}
+
 ?>
 
 
@@ -88,17 +98,21 @@ if(empty($err)){
     <hr>
     <form action="" method="post">
         <div class="mb-3">
-                <label for="inputUname" class="form-label">Username</label>
-                <input type="text" class="form-control" name="username" id="inputUname">
+                <label for="inputUname" class="form-label">Username</label>   
+                <input type="text" class="form-control" name="username" id="inputUname" style="width: 70%;">
         </div>
         <div class="mb-3">
-        <label for="inputPassword3" class="col-sm-2 col-form-label">Password</label>
-            <div class="col-sm-10">
-            <input type="password" class="form-control" name="password" id="inputPassword3">
+            <label for="inputPassword3" class="col-sm-2 col-form-label">Password</label>
+            <input type="password" class="form-control" name="password" id="inputPassword3" style="width: 70%;">
         </div>
         <br>
-        <div class="col-12">
-            <button type="submit" class="btn btn-primary">Login</button>
+        <div class="row">
+            <div class="col-6">
+                <button type="submit" name="login" class="btn bbtn-primary" style="background: dodgerblue; border: dodgerblue; color: white;">Login</button>
+            </div>
+            <div class="col-6" style="text-align: right">
+                <button type="forgotPassword" name="forgotPassword" class="btn btn-primary" style="background: red; border: red;'">Forgot Password</button>
+            </div>
         </div>
     </form>
 </div>

@@ -10,6 +10,13 @@ else{
     $result = mysqli_query($conn, $sql);
     $row = mysqli_fetch_assoc($result);
 }
+
+if(isset($_POST['forgotPassword'])){
+    session_start();
+    $_SESSION = array();
+    session_destroy();
+    header("location: forgotPassword.php");
+}
 ?>
 
 <!doctype html>
@@ -30,7 +37,7 @@ else{
             <a class="navbar-brand" href="#">Hotel Booking Management</a>
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="welcome.php"><?php echo $row['fname']?> <i class="fa fa-user" aria-hidden="true"></i></a>
+                    <a class="nav-link active" aria-current="page" href="accountInfo.php"><?php echo $row['fname']?> <i class="fa fa-user" aria-hidden="true"></i></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Contact <i class="fa fa-envelope-o" aria-hidden="true"></i></a>
@@ -49,21 +56,27 @@ else{
     <table>
         <tr>
             <th>Name:</th>
-            <td><?php echo $row['fname']?> <?php echo $row['lname']?></td>
+            <td><?php echo $_SESSION['fname']?> <?php echo $_SESSION['lname']?></td>
         </tr>
         <tr>
             <th>Username:</th>
-            <td><?php echo $row['username']?></td>
+            <td><?php echo $_SESSION['username']?></td>
         </tr>
         <tr>
             <th>Email:</th>
-            <td><?php echo $row['email']?></td>
+            <td><?php echo $_SESSION['email']?></td>
         </tr>
         <tr>
             <th>Created On:</th>
             <td><?php echo $row['created_at']?></td>
         </tr>
     </table>
+    <br>
+    <form action="" method="post">
+    <div class="col-12" style="text-align: right">
+        <button type="forgotPassword" name="forgotPassword" class="btn btn-primary" style="background: red; border: red; padding: 10px;'">Reset Password</button>
+    </div>
+    </form>
 
     <!-- Optional JavaScript; choose one of the two! -->
 
