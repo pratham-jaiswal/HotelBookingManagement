@@ -23,11 +23,10 @@ if($_SERVER['REQUEST_METHOD']=="POST"){
                 $fname = trim($_POST['fname']);
             }
             else{
-                echo "Something went wrong";
+                echo "<script>alert('Something went wrong');</script>";
             }
         }
     }
-    mysqli_stmt_close($stmt);
 
     //Check if last name is empty
     if(empty(trim($_POST['lname']))){
@@ -47,11 +46,10 @@ if($_SERVER['REQUEST_METHOD']=="POST"){
                 $lname = trim($_POST['lname']);
             }
             else{
-                echo "Something went wrong";
+                echo "<script>alert('Something went wrong');</script>";
             }
         }
     }
-    mysqli_stmt_close($stmt);
     
     //Check if email is empty
     if(empty(trim($_POST['email']))){
@@ -76,11 +74,10 @@ if($_SERVER['REQUEST_METHOD']=="POST"){
                 }
             }
             else{
-                echo "Something went wrong";
+                echo "<script>alert('Something went wrong');</script>";
             }
         }
     }
-    mysqli_stmt_close($stmt);
 
     //Check if username is empty
     if(empty(trim($_POST['username']))){
@@ -105,11 +102,11 @@ if($_SERVER['REQUEST_METHOD']=="POST"){
                 }
             }
             else{
-                echo "Something went wrong";
+                echo "<script>alert('Something went wrong');</script>";
             }
         }
     }
-    mysqli_stmt_close($stmt);
+    
 
     //Password validation
     if(empty(trim($_POST['password']))){
@@ -124,7 +121,7 @@ if($_SERVER['REQUEST_METHOD']=="POST"){
 
     //Confirm Password validation
     if(trim($_POST['password']) != trim($_POST['confirm_password'])){
-        $password_err = "Passwords should match";
+        $confirm_password_err = "Passwords should match";
     }
 
     //If there were no errors then insert the values into the database
@@ -147,13 +144,30 @@ if($_SERVER['REQUEST_METHOD']=="POST"){
                 header("location: login.php");
             }
             else{
-                echo "Something went wrong... Cannot redirect";
+                echo "<script>alert('Something went wrong.. Cannot Redirect');</script>";
             }
         }
         mysqli_stmt_close($stmt);
     }
     else{
-        echo $fname_err, $lname_err, $email_err, $username_err, $password_err;
+        if(!empty($fname_err)){
+            echo "<script>alert('$fname_err')</script>";
+        }
+        elseif(!empty($lname_err)){
+            echo "<script>alert('$lname_err')</script>";
+        }
+        elseif(!empty($email_err)){
+            echo "<script>alert('$email_err')</script>";
+        }
+        elseif(!empty($username_err)){
+            echo "<script>alert('$username_err')</script>";
+        }
+        elseif(!empty($password_err)){
+            echo "<script>alert('$password_err')</script>";
+        }
+        elseif(!empty($confirm_password_err)){
+            echo "<script>alert('$confirm_password_err')</script>";
+        }
     }
     mysqli_close($conn);
 }
