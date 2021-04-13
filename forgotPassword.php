@@ -2,11 +2,10 @@
 require_once "config.php";
 
 $email = $username = $password = $confirm_password = "";
-$err = $password_err = "";
+$err = $password_err = $confirm_password_err = "";
 if($_SERVER['REQUEST_METHOD']=="POST"){
     if(empty(trim($_POST['username'])) || empty(trim($_POST['password'])) || empty(trim($_POST['email'])) || empty(trim($_POST['confirm_password']))){
         $err = "Please enter all details";
-        echo $err;
     }
     else{
         $username = trim($_POST['username']);
@@ -39,7 +38,7 @@ if(empty($err)){
                 
                     //Confirm Password validation
                     if(trim($_POST['password']) != trim($_POST['confirm_password'])){
-                        $password_err = "Passwords should match";
+                        $confirm_password_err = "Passwords should match";
                     }
                     if(empty($password_err)){
                         $password = password_hash($password, PASSWORD_DEFAULT);
@@ -47,15 +46,21 @@ if(empty($err)){
                         $stmt = mysqli_query($conn, $sql);
                         header("location: login.php");
                     }
+                    else{    
+                        echo "<script>alert('$password_err')</script>";
+                    }
                 }
                 else{
                     $err = "Wrong Email address";
+                    echo "<script>alert('$err')</script>";
                 }
             }
         }
     }
 }
-
+else{ 
+    echo "<script>alert('$err')</script>";
+}
 
 
 
