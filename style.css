@@ -3,11 +3,10 @@
     overflow: hidden;
 }
 
-.container input{
+.container form input{
     width: 100%;
     border: solid 1px;
 }
-
 .container hr{
     color: black;
     height: 1.5px;
