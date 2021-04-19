@@ -3,7 +3,7 @@ require_once "config.php";
 $fname = $lname = $email = $username = $password = $confirm_password = "";
 $fname_err = $lname_err = $email_err = $username_err = $password_err = $confirm_password_err = "";
 
-//Username validation
+
 if($_SERVER['REQUEST_METHOD']=="POST"){
     //Check if first name is empty
     if(empty(trim($_POST['fname']))){
@@ -201,7 +201,7 @@ if($_SERVER['REQUEST_METHOD']=="POST"){
                     <a class="nav-link" href="login.php">Login <i class="fa fa-sign-in" aria-hidden="true"></i></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Contact <i class="fa fa-envelope-o" aria-hidden="true"></i></a>
+                    <a class="nav-link" href="contact.php">Contact <i class="fa fa-envelope-o" aria-hidden="true"></i></a>
                 </li>
             </ul>
         </div>
@@ -249,16 +249,6 @@ if($_SERVER['REQUEST_METHOD']=="POST"){
         </div>
     </form>
 </div>
-
-    <!-- Optional JavaScript; choose one of the two! -->
-
-    <!-- Option 1: Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
-
-    <!-- Option 2: Separate Popper and Bootstrap JS -->
-    <!--
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js" integrity="sha384-SR1sx49pcuLnqZUnnPwx6FCym0wLsk5JZuNx2bPPENzswTNFaQU1RDvt3wT4gWFG" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.min.js" integrity="sha384-j0CNLUeiqtyaRmlzUHCPZ+Gy5fQu0dQ6eZ/xAww941Ai1SxSY+0EQqNXNE6DZiVc" crossorigin="anonymous"></script>
-    -->
   </body>
 </html>
