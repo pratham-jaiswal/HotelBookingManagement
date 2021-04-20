@@ -1,5 +1,9 @@
 <?php
 session_start();
+if(!isset($_SESSION['username'])){
+    header("location: login.php");
+    exit();
+}
 require_once "config.php";
 
 if(!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true){
@@ -40,7 +44,10 @@ if(isset($_POST['forgotPassword'])){
                     <a class="nav-link active" aria-current="page" href="accountInfo.php"><?php echo $row['fname']?> <i class="fa fa-user" aria-hidden="true"></i></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="contact.php">Contact <i class="fa fa-envelope-o" aria-hidden="true"></i></a>
+                    <a class="nav-link" href="home.php">Home</i></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="contactt.php">Contact <i class="fa fa-envelope-o" aria-hidden="true"></i></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="logout.php">Logout <i class="fa fa-sign-out" aria-hidden="true"></i></a>
@@ -50,8 +57,8 @@ if(isset($_POST['forgotPassword'])){
     </nav>
 
 <div class="container mt-4">
-    <a href="https://imgur.com/VhlK1IB"><img src="https://i.imgur.com/VhlK1IB.png" title="source: imgur.com" class="img" /></a>
-    <h2>Account Details</h2>
+<a><img src="https://i.imgur.com/H2EpCV0.png" title="source: imgur.com" /></a>    
+<h2>Account Details</h2>
     <hr>
     <table>
         <tr>
