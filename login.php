@@ -4,7 +4,7 @@ session_start();
 
 //Check if user is already logged in
 if(isset($_SESSION['username'])){
-    header("location: accountInfo.php");
+    header("location: home.php");
     exit();
 }
 
@@ -50,7 +50,7 @@ else{
                         $_SESSION["id"] = $id;
                         $_SESSION["loggedin"] = true;
                         //Redirect the user to the accountInfo page
-                        header("location: accountInfo.php");
+                        header("location: home.php");
                     }
                     else{
                         $err = "Incorrect password";
