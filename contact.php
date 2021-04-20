@@ -2,7 +2,10 @@
 require_once "config.php";
 $name = $email = $message = "";
 $name_err = $email_err = $message_err = "";
-
+if(isset($_SESSION['username'])){
+    header("location: contactt.php");
+    exit();
+}
 //name validation
 if($_SERVER['REQUEST_METHOD']=="POST"){
     //Check if name is empty
