@@ -4,6 +4,9 @@
         header("location: login.php");
         exit();
     }
+    if(isset($_SESSION['payDone'])){
+        $_SESSION['revRooms'] = $_SESSION["cInD"] = $_SESSION["cOutD"] = NULL;
+    }
     require_once "config.php";
     $cInD = $cOutD = "";
     $nSS = $nSD = $nDS = $nDD = $nDSt = 0;
@@ -14,12 +17,16 @@
     $pDSt = 2000;
     $totPrice = 0;
     $tax = 0;
+    $cartItemN = [];
+    $cartItemQ = [];
+    $cartItemP = [];
     $m = "";
     if($_SERVER['REQUEST_METHOD']=="POST"){
         if(!empty($_POST['CheckIn'])&&!empty($_POST['CheckOut'])){
             $_SESSION["cInD"] = $cInD = $_POST['CheckIn'];
             $_SESSION["cOutD"] = $cOutD = $_POST['CheckOut'];
-            $_SESSION["totDays"] = (strtotime($_SESSION["cOutD"]) - strtotime($_SESSION["cInD"]))/(60 * 60 * 24);
+            $_SESSION["totDays"] = $totDays = (strtotime($_SESSION["cOutD"]) - strtotime($_SESSION["cInD"]))/(60 * 60 * 24);
+            $_SESSION['payDone'] = NULL;
         }
     }
     if(empty($_SESSION["cInD"]) || empty($_SESSION["cOutD"])){
@@ -39,24 +46,53 @@
         $nDS = $_POST['nDS'];
         $nDD = $_POST['nDD'];
         $nDSt = $_POST['nDSt'];
-        if(isset($totDays)){
-            $totPrice = (($nSS*$pSS) + ($nSD*$pSD) + ($nDS*$pDS) + ($nDD*$pDD) + ($nDSt*$pDSt))*$_SESSION["totDays"];
+        if($nSS>0){
+            $cartItemN[] = "Standard (Single)";
+            $cartItemQ[] = $nSS;
+            $cartItemP[] = $nSS*$pSS;
         }
-        if(($totPrice>0)&&($totPrice<=1000)){
-            $tax = 0;
-            $_SESSION["taxp"] = 0;
+        if($nSD>0){
+            $cartItemN[] = "Standard (Double)";
+            $cartItemQ[] = $nSD;
+            $cartItemP[] = $nSD*$pSD;
         }
-        elseif(($totPrice>1000) && ($totPrice<=7500)){
-            $tax = $totPrice*(12/100);
-            $_SESSION["taxp"] = 12;
+        if($nDS>0){
+            $cartItemN[] = "Deluxe (Single)";
+            $cartItemQ[] = $nDS;
+            $cartItemP[] = $nDS*$pDS;
         }
-        else{
-            $tax = $totPrice*(18/100);
-            $_SESSION["taxp"] = 18;
+        if($nDD>0){
+            $cartItemN[] = "Deluxe (Double)";
+            $cartItemQ[] = $nDD;
+            $cartItemP[] = $nDD*$pDD;
         }
-        $_SESSION["totExclTax"] = $totPrice;
-        $_SESSION['tax'] = $tax;
-        $totPrice = $totPrice + $tax;
+        if($nDSt>0){
+            $cartItemN[] = "Deluxe Suite";
+            $cartItemQ[] = $nDSt;
+            $cartItemP[] = $nDSt*$pDSt;
+        }
+        $i=0;
+        foreach($cartItemP as $ci){
+            $totPrice = $totPrice + $ci;
+        }
+        if(isset($totPrice) && isset($_SESSION["totDays"])){
+            $totPrice = $totPrice*$_SESSION["totDays"];
+            if(($totPrice>0)&&($totPrice<=1000)){
+                $tax = 0;
+                $_SESSION["taxp"] = 0;
+            }
+            elseif(($totPrice>1000) && ($totPrice<=7500)){
+                $tax = $totPrice*(12/100);
+                $_SESSION["taxp"] = 12;
+            }
+            else{
+                $tax = $totPrice*(18/100);
+                $_SESSION["taxp"] = 18;
+            }
+            $_SESSION["totExclTax"] = $totPrice;
+            $_SESSION['tax'] = $tax;
+            $totPrice = $totPrice + $tax;
+    }
         if($m == "Enter Check In and Check Out Dates to Book Rooms"){
             echo "<script>alert('$m')</script>";
         }
@@ -135,6 +171,9 @@
     $_SESSION["nDD"] = $nDD;
     $_SESSION["nDSt"] = $nDSt;
     $_SESSION["totPrice"] = $totPrice;
+    $_SESSION["cartItemN"] = $cartItemN;
+    $_SESSION["cartItemQ"] = $cartItemQ;
+    $_SESSION["cartItemP"] = $cartItemP;
 ?>
 
 <!doctype html>
@@ -183,35 +222,6 @@
             color: #fff;">
         <h1 style="-webkit-text-stroke-width: 2px;-webkit-text-stroke-color: black;
         font-size: 200px; font-family:brush script mt">Welcome</h1>
-    
-
-        <!--<div class="container mt-4" style="width: 700px; background: red;
-        padding: 50px; border-radius: 20px; margin-top: -10%; color: black;
-        font-size: 20px; text-align: left;">
-            <form action="" method="post">
-                <div class="row">
-                    <div class="col-md-6">
-                        <label for="Name" class="form-label">Name:</label>
-                        <input type="text" class="form-control" name="name" id="Name">
-                    </div>
-                    <div class="col-md-6">
-                        <label for="inPeople" class="form-label">Number of People:</label>
-                        <input type="number" class="form-control" name="people" id="people">
-
-                    </div>
-                </div>
-                <br>
-                <div class="row">
-                <div class="col-md-6">
-                    <label for="ChkInDate" class="form-label">Check-In:</label>
-                    <input type="date" class="form-control" name="CheckIn" id="ChkInDate">
-                </div>
-                <div class="col-md-6">
-                    <label for="ChkOutDate" class="form-label">Check-Out:</label>
-                    <input type="date" class="form-control" name="CheckOut" id="ChkOutDate">
-                </div>
-            </form>
-        </div>-->
     </div>
     
     <div class="container mt-4" style="width: 1000px;">
@@ -231,11 +241,11 @@
             </div>
             <br>
             <div class="col-6">
-                <button type="submit" name="go" class="btn bbtn-primary" style="background: dodgerblue; border: dodgerblue; color: white;">Go</button>
+                <button type="submit" name="go" class="btn btn-primary">Go</button>
             </div>
             <br>
             <h4 style="text-align: center;"><?php echo $m?></h4>
-            <div class="row" style="background: royalblue; margin: 2%; border-radius: 20px;">
+            <div class="row" style="background: orange; margin: 2%; border-radius: 20px;">
                 <div class="col-md-6" style="padding: 30px;">
                     <img src="https://i.imgur.com/bUisFpo.png" title="source: imgur.com" style="width: 100%;border: 4px solid white; border-radius: 10px;"/>
                 </div>
@@ -263,7 +273,7 @@
                     </table>
                 </div>
             </div>
-            <div class="row" style="background: royalblue; margin: 2%; border-radius: 20px;">
+            <div class="row" style="background: orange; margin: 2%; border-radius: 20px;">
                 <div class="col-md-6" style="padding: 30px;">
                     <img src="https://i.imgur.com/CiFTH6P.png" title="source: imgur.com" style="width: 100%; border: 4px solid white; border-radius: 10px;"/>
                 </div>
@@ -291,7 +301,7 @@
                     </table>
                 </div>
             </div>
-            <div class="row" style="background: royalblue; margin: 2%; border-radius: 20px;">
+            <div class="row" style="background: orange; margin: 2%; border-radius: 20px;">
                 <div class="col-md-6" style="padding: 30px;">
                     <img src="https://i.imgur.com/ZgBQnwI.png" title="source: imgur.com" style="width: 100%; border: 4px solid white; border-radius: 10px;"/>
                 </div>
@@ -319,7 +329,7 @@
                     </table>
                 </div>
             </div>
-            <div class="row" style="background: royalblue; margin: 2%; border-radius: 20px;">
+            <div class="row" style="background: orange; margin: 2%; border-radius: 20px;">
                 <div class="col-md-6" style="padding: 30px;">
                     <img src="https://i.imgur.com/9Z3O837.png" title="source: imgur.com" style="width: 100%; border: 4px solid white; border-radius: 10px;"/>
                 </div>
@@ -347,7 +357,7 @@
                     </table>
                 </div>
             </div>
-            <div class="row" style="background: royalblue; margin: 2%; border-radius: 20px;">
+            <div class="row" style="background: orange; margin: 2%; border-radius: 20px;">
                 <div class="col-md-6" style="padding: 30px;">
                     <img src="https://i.imgur.com/6Ygg842.png" title="source: imgur.com" style="width: 100%; border: 4px solid white; border-radius: 10px;"/>
                 </div>
@@ -375,13 +385,11 @@
                     </table>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-6">
-                </div>
-                <div class="col-6" style="text-align: right">
-                    <button type="submit" name="reserve" class="btn bbtn-primary" style="background: red; border: red; color: white; margin-right: 4%; margin-bottom: 10%;">Proceed to Pay</button>
-                </div>
+            <br>
+            <div class="col-12">
+                <button type="submit" name="reserve" class="btn btn-primary" onmouseover="this.style.backgroundColor='rgb(170, 0, 0)';return true;" onmouseout="this.style.backgroundColor='red';return true;" style="background: red; border: red; float: right;">Proceed to Pay</button>
             </div>
+            <br><br>
         </form>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
