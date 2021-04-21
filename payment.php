@@ -20,11 +20,13 @@ $nDSt = $_SESSION["nDSt"];
 $cInD = $_SESSION["cInD"];
 $cOutD = $_SESSION["cOutD"];
 $username = $_SESSION["username"];
+$cartItemN = $_SESSION["cartItemN"];
+$cartItemQ = $_SESSION["cartItemQ"];
+$cartItemP = $_SESSION["cartItemP"];
 $revRNo = [];
 $revRt = "";
 $cname = $ccno = $emonth = $name = $email = $eyear = $cvv = "";
 $cname_err = $ccno_err = $emy_err = $name_err = $email_err = $cvv_err = "";
-
 if($_SERVER['REQUEST_METHOD']=="POST"){
 
     if(empty(trim($_POST['cname']))){
@@ -169,6 +171,7 @@ if($_SERVER['REQUEST_METHOD']=="POST"){
                 }
             }
             if($f==1){
+                echo "<script>alert('Rooms Successfully Reserved')</script>";
                 echo "<script>window.location.replace('home.php')</script>";
             }
             mysqli_stmt_close($stmt);
@@ -223,6 +226,44 @@ if(empty($revRNo)){
     $revRNo = $_SESSION["revRooms"];
 }
 
+// start table
+$html = '<table>';
+// header row
+$html .= '<tr>';
+$html .= '<th style="font-size: 16.5px; padding-right: 30px; padding-bottom: 5px; padding-top: 5px; border-top: 1px solid black; border-bottom: 1px solid black;">Room Type</th>';
+$html .= '<th style="font-size: 16.5px; padding-left: 30px; padding-right: 0px; padding-bottom: 5px; padding-top: 5px; border-top: 1px solid black; border-bottom: 1px solid black;">No. of Rooms</th>';
+$html .= '<th style="font-size: 16.5px; padding-left: 30px; padding-bottom: 5px; padding-top: 5px; border-top: 1px solid black; border-bottom: 1px solid black;">Net Price</th>';
+$html .= '</tr>';
+
+$i=0;
+foreach($cartItemN as $cn){
+    $html .= '<tr>';
+    $html .= '<td style="font-size: 16.5px; padding-right: 30px; padding-bottom: 10px; padding-top: 10px;">' . $cn . '</td>';
+    $html .= '<td style="font-size: 16.5px; padding-left: 30px; padding-bottom: 10px; padding-top: 10px;">' . $cartItemQ[$i] . '</td>';
+    $html .= '<td style="font-size: 16.5px; padding-left: 30px; padding-bottom: 10px; padding-top: 10px;"><i class="fa fa-inr" aria-hidden="true"></i>' . $cartItemP[$i]*$_SESSION["totDays"] . '</td>';
+    $html .= '</tr>';
+    $i++;
+}
+
+$html .= '<tr>';
+$html .= '<td style="font-size: 16.5px; font-weight: bold;padding-right: 30px; border-top: 1px solid black; padding-bottom: 10px; padding-top: 10px;">Total</td>';
+$html .= '<td style="font-size: 16.5px; font-weight: bold;padding-left: 30px; border-top: 1px solid black; padding-bottom: 10px; padding-top: 10px;">'.$_SESSION["nSS"]+$_SESSION["nSD"]+$_SESSION["nDS"]+$_SESSION["nDD"]+$_SESSION["nDSt"].'</td>';
+$html .= '<td style="font-size: 16.5px; font-weight: bold;padding-left: 30px; border-top: 1px solid black; padding-bottom: 10px; padding-top: 10px;"><i class="fa fa-inr" aria-hidden="true"></i>'.$_SESSION["totExclTax"].'</td>';
+$html .= '</tr>';
+$html .= '<tr>';
+$html .= '<td style="font-size: 16.5px; padding-right: 30px; padding-bottom: 10px;">Tax ('.$_SESSION["taxp"].'%)</td>';
+$html .= '<td style="font-size: 16.5px; padding-left: 30px; padding-bottom: 10px;"> </td>';
+$html .= '<td style="font-size: 16.5px; padding-left: 30px; padding-bottom: 10px;"><i class="fa fa-inr" aria-hidden="true"></i>'.$_SESSION["tax"].'</td>';
+$html .= '</tr>';
+$html .= '<tr>';
+$html .= '<td style="font-weight: bold; padding-right: 30px; border-top: 1px solid black; padding-top: 10px; font-size: 16.5px;">Net Total</td>';
+$html .= '<td style="font-weight: bold; padding-left: 30px; border-top: 1px solid black; padding-top: 10px; font-size: 16.5px;">'.$_SESSION["nSS"]+$_SESSION["nSD"]+$_SESSION["nDS"]+$_SESSION["nDD"]+$_SESSION["nDSt"].'</td>';
+$html .= '<td style="font-size: 16.5px; font-weight: bold; padding-left: 30px; border-top: 1px solid black; padding-top: 10px;"><i class="fa fa-inr" aria-hidden="true"></i>'.$_SESSION["totPrice"].'</td>';
+$html .= '</tr>';
+
+$html .= '</table>';
+$html .= '<br>';
+$_SESSION['cartTable'] = $html;
 
 ?>
 
@@ -290,76 +331,30 @@ if(empty($revRNo)){
                             <input type="text" class="form-control" name="cvv" id="cvv" placeholder="231" style="border: 1px solid black;">
                         </div>
                     </div>
+                    <br>
+                    <div class="col-12">
+                        <button type="submit" name="pay" class="btn btn-primary" onmouseover="this.style.backgroundColor='rgb(170, 0, 0)';return true;" onmouseout="this.style.backgroundColor='red';return true;" style="background: red; border: red;">Pay</button>
+                    </div>
                 </div>
                 <div class="col-5" style="padding-left: 5%;">
                 <h4>Reservations</h4>
                 <hr style="color: black; height: 1.5px;">
                 <table>
                     <tr>
-                        <th style="font-size: 20px; padding-right: 30px; padding-bottom: 10px;">Check In Date</th>
-                        <td style="font-size: 20px; padding-left: 30px; padding-bottom: 10px;"><?php echo $_SESSION["cInD"];?></td>
+                        <th style="font-size: 20px; padding-right: 30px; padding-bottom: 10px; font-size: 16.5px;">Check In Date</th>
+                        <td style="font-size: 20px; padding-left: 30px; padding-bottom: 10px; font-size: 16.5px;"><?php echo $_SESSION["cInD"];?></td>
                     </tr>
                     <tr>
-                        <th style="font-size: 20px; padding-right: 30px; padding-bottom: 10px;">Check Out Date</th>
-                        <td style="font-size: 20px; padding-left: 30px; padding-bottom: 10px;"><?php echo $_SESSION["cOutD"];?></td>
+                        <th style="font-size: 20px; padding-right: 30px; padding-bottom: 10px; font-size: 16.5px;">Check Out Date</th>
+                        <td style="font-size: 20px; padding-left: 30px; padding-bottom: 10px; font-size: 16.5px;"><?php echo $_SESSION["cOutD"];?></td>
                     </tr>
                     <tr>
-                        <th style="font-size: 20px; padding-right: 30px; padding-bottom: 20px;">Total Nights Staying</th>
-                        <td style="font-size: 20px; padding-left: 30px; padding-bottom: 20px;"><?php echo $_SESSION["totDays"];?></td>
+                        <th style="font-size: 20px; padding-right: 30px; font-size: 16.5px; padding-bottom: 20px;">Total Nights Staying</th>
+                        <td style="font-size: 20px; padding-left: 30px; font-size: 16.5px; padding-bottom: 20px;"><?php echo $_SESSION["totDays"];?></td>
                     </tr>
                 </table>
-                <table>
-                    <tr>
-                        <th style="font-size: 20px; padding-right: 30px; padding-bottom: 5px; padding-top: 5px; border-top: 1px solid black; border-bottom: 1px solid black;">Room Type</th>
-                        <th style="font-size: 20px; padding-left: 30px; padding-bottom: 5px; padding-top: 5px; border-top: 1px solid black; border-bottom: 1px solid black;">No. of Rooms</th>
-                        <th style="font-size: 20px; padding-left: 30px; padding-bottom: 5px; padding-top: 5px; border-top: 1px solid black; border-bottom: 1px solid black;">Net Price</th>
-                    </tr>
-                    <tr>
-                        <td style="font-size: 20px; padding-right: 30px; padding-bottom: 5px; padding-top: 10px;">Standard (Single)</td>
-                        <td style="font-size: 20px; padding-left: 30px; padding-bottom: 5px; padding-top: 10px;"><?php echo $_SESSION['nSS']?></td>
-                        <td style="font-size: 20px; padding-left: 30px; padding-bottom: 5px; padding-top: 10px;"><i class="fa fa-inr" aria-hidden="true"></i><?php echo $_SESSION['nSS']*$_SESSION['pSS']*$_SESSION["totDays"]?></td>
-                    </tr>
-                    <tr>
-                        <td style="font-size: 20px; padding-right: 30px; padding-bottom: 5px;">Standard (Double)</td>
-                        <td style="font-size: 20px; padding-left: 30px; padding-bottom: 5px;"><?php echo $_SESSION['nSD']?></td>
-                        <td style="font-size: 20px; padding-left: 30px; padding-bottom: 5px;"><i class="fa fa-inr" aria-hidden="true"></i><?php echo $_SESSION['nSD']*$_SESSION['pSD']*$_SESSION["totDays"]?></td>
-                    </tr>
-                    <tr>
-                        <td style="font-size: 20px; padding-right: 30px; padding-bottom: 5px;">Deluxe (Single)</td>
-                        <td style="font-size: 20px; padding-left: 30px; padding-bottom: 5px;"><?php echo $_SESSION['nDS']?></td>
-                        <td style="font-size: 20px; padding-left: 30px; padding-bottom: 5px;"><i class="fa fa-inr" aria-hidden="true"></i><?php echo $_SESSION['nDS']*$_SESSION['pDS']*$_SESSION["totDays"]?></td>
-                    </tr>
-                    <tr>
-                        <td style="font-size: 20px; padding-right: 30px; padding-bottom: 5px;">Deluxe (Double)</td>
-                        <td style="font-size: 20px; padding-left: 30px; padding-bottom: 5px;"><?php echo $_SESSION['nDD']?></td>
-                        <td style="font-size: 20px; padding-left: 30px; padding-bottom: 5px;"><i class="fa fa-inr" aria-hidden="true"></i><?php echo $_SESSION['nDD']*$_SESSION['pDD']*$_SESSION["totDays"]?></td>
-                    </tr>
-                    <tr>
-                        <td style="font-size: 20px; padding-right: 30px; padding-bottom: 20px;">Deluxe Suite</td>
-                        <td style="font-size: 20px; padding-left: 30px; padding-bottom: 20px;"><?php echo $_SESSION['nDSt']?></td>
-                        <td style="font-size: 20px; padding-left: 30px; padding-bottom: 20px;"><i class="fa fa-inr" aria-hidden="true"></i><?php echo $_SESSION['nDSt']*$_SESSION['pDSt']*$_SESSION["totDays"]?></td>
-                    </tr>
-                    <tr>
-                        <td style="font-size: 20px; font-weight: bold;padding-right: 30px; border-top: 1px solid black; padding-bottom: 5px; padding-top: 10px;">Total</td>
-                        <td style="font-size: 20px; font-weight: bold;padding-left: 30px; border-top: 1px solid black; padding-bottom: 5px; padding-top: 10px;"><?php echo $_SESSION['nSS']+$_SESSION['nSD']+$_SESSION['nDS']+$_SESSION['nDD']+$_SESSION['nDSt']?></td>
-                        <td style="font-size: 20px; font-weight: bold;padding-left: 30px; border-top: 1px solid black; padding-bottom: 5px; padding-top: 10px;"><i class="fa fa-inr" aria-hidden="true"></i><?php echo $_SESSION['totExclTax']?></td>
-                    </tr>
-                    <tr>
-                        <td style="font-size: 20px; padding-right: 30px; padding-bottom: 20px;">Tax (<?php echo $_SESSION['taxp']?>%)</td>
-                        <td style="font-size: 20px; padding-left: 30px; padding-bottom: 20px;"> </td>
-                        <td style="font-size: 20px; padding-left: 30px; padding-bottom: 20px;"><i class="fa fa-inr" aria-hidden="true"></i><?php echo $_SESSION['tax']?></td>
-                    </tr>
-                    <tr>
-                        <td style="font-size: 20px; font-weight: bold;padding-right: 30px; border-top: 1px solid black; padding-top: 10px;">Net Total</td>
-                        <td style="font-size: 20px; font-weight: bold;padding-left: 30px; border-top: 1px solid black; padding-top: 10px;"><?php echo $_SESSION['nSS']+$_SESSION['nSD']+$_SESSION['nDS']+$_SESSION['nDD']+$_SESSION['nDSt']?></td>
-                        <td style="font-size: 20px; font-weight: bold;padding-left: 30px; border-top: 1px solid black; padding-top: 10px;"><i class="fa fa-inr" aria-hidden="true"></i><?php echo $_SESSION['totPrice']?></td>
-                    </tr>
-                </table>
+                <?php echo $_SESSION['cartTable']?>
                 </div>
-            </div>
-            <br>
-            <div class="col-6">
-                <button type="submit" name="pay" class="btn bbtn-primary" style="background: dodgerblue; border: dodgerblue; color: white;">Pay</button>
             </div>
         </form>
     </div>
