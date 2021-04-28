@@ -138,6 +138,11 @@ if($_SERVER['REQUEST_METHOD']=="POST"){
                 <li class="nav-item">
                     <a class="nav-link" href="home.php">Home</i></a>
                 </li>
+                <?php
+                if($_SESSION["admin"]=='YES'){
+                    echo '<li class="nav-item"><a class="nav-link" href="rooms.php">Admin</a></li>';
+                }
+                ?>
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="contactt.php">Contact <i class="fa fa-envelope-o" aria-hidden="true"></i></a>
                 </li>
