@@ -2,9 +2,15 @@
 session_start();
 require_once "config.php";
 if(isset($_SESSION['username'])){
-    header("location: home.php");
+    if($_SESSION["admin"]=='YES'){
+        header("location: rooms.php");
+    }
+    else{
+        header("location: home.php");
+    }
     exit();
 }
+
 $fname = $lname = $email = $username = $password = $confirm_password = "";
 $fname_err = $lname_err = $email_err = $username_err = $password_err = $confirm_password_err = "";
 

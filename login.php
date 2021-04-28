@@ -4,7 +4,12 @@ session_start();
 
 //Check if user is already logged in
 if(isset($_SESSION['username'])){
-    header("location: home.php");
+    if($_SESSION["admin"]=='YES'){
+        header("location: rooms.php");
+    }
+    else{
+        header("location: home.php");
+    }
     exit();
 }
 
@@ -20,6 +25,11 @@ if($_SERVER['REQUEST_METHOD']=="POST"){
     else{
         $username = trim($_POST['username']);
         $password = trim($_POST['password']);
+        $sql = "SELECT id, fname, lname, email, username, password, admin FROM loginform WHERE username = ?";
+        $q = mysqli_query($conn, $sql);
+        if(!$q){
+            echo "<script>alert('An account with that username does not exist');</script>";
+        }
     }
 }
 if(isset($_POST['forgotPassword'])){
@@ -30,15 +40,16 @@ if(isset($_POST['forgotPassword'])){
 }
 else{
     if(empty($err)){
-        $sql = "SELECT id, fname, lname, email, username, password FROM loginform WHERE username = ?";
+        $sql = "SELECT id, fname, lname, email, username, password, admin, created_at FROM loginform WHERE username = ?";
         $stmt = mysqli_prepare($conn, $sql);
+        
         mysqli_stmt_bind_param($stmt, "s", $param_username);
         $param_username = $username;
         //Try to execute this statement
         if(mysqli_stmt_execute($stmt)){
             mysqli_stmt_store_result($stmt);
             if(mysqli_stmt_num_rows($stmt) == 1){
-                mysqli_stmt_bind_result($stmt, $id, $fname, $lname, $email, $username, $hashed_password);
+                mysqli_stmt_bind_result($stmt, $id, $fname, $lname, $email, $username, $hashed_password, $admin, $created_at);
                 if(mysqli_stmt_fetch($stmt)){
                     if(password_verify($password, $hashed_password)){
                         //Password is correct. Allow user to login
@@ -50,7 +61,14 @@ else{
                         $_SESSION["id"] = $id;
                         $_SESSION["loggedin"] = true;
                         //Redirect the user to the accountInfo page
-                        header("location: home.php");
+                        $_SESSION["admin"] = $admin;
+                        $_SESSION["created_at"] = $created_at;
+                        if($_SESSION["admin"]=='YES'){
+                            header("location: rooms.php");
+                        }
+                        else{
+                            header("location: home.php");
+                        }
                     }
                     else{
                         $err = "Incorrect password";
@@ -113,10 +131,10 @@ else{
         <br>
         <div class="row">
             <div class="col-6">
-                <button type="submit" name="login" class="btn bbtn-primary" style="background: dodgerblue; border: dodgerblue; color: white;">Login</button>
+                <button type="submit" name="login" class="btn btn-primary">Log In</button>
             </div>
-            <div class="col-6" style="text-align: right">
-                <button type="forgotPassword" name="forgotPassword" class="btn btn-primary" style="background: red; border: red;'">Forgot Password</button>
+            <div class="col-6">
+                <button type="submit" name="forgotPassword" class="btn btn-primary" id="forgotPassword" onmouseover="this.style.backgroundColor='rgb(170, 0, 0)';return true;" onmouseout="this.style.backgroundColor='red';return true;" style="background: red; border: red;">Forgot Password</button>
             </div>
         </div>
     </form>
