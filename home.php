@@ -10,11 +10,7 @@
     require_once "config.php";
     $cInD = $cOutD = "";
     $nSS = $nSD = $nDS = $nDD = $nDSt = 0;
-    $pSS = 500;
-    $pSD = 800;
-    $pDS = 1000;
-    $pDD = 1500;
-    $pDSt = 2000;
+    
     $totPrice = 0;
     $tax = 0;
     $cartItemN = [];
@@ -23,10 +19,16 @@
     $m = "";
     if($_SERVER['REQUEST_METHOD']=="POST"){
         if(!empty($_POST['CheckIn'])&&!empty($_POST['CheckOut'])){
-            $_SESSION["cInD"] = $cInD = $_POST['CheckIn'];
-            $_SESSION["cOutD"] = $cOutD = $_POST['CheckOut'];
-            $_SESSION["totDays"] = $totDays = (strtotime($_SESSION["cOutD"]) - strtotime($_SESSION["cInD"]))/(60 * 60 * 24);
-            $_SESSION['payDone'] = NULL;
+            if(($_POST['CheckIn']<=date('Y-m-d')) || ($_POST['CheckOut']<=date('Y-m-d')) || ($_POST['CheckOut']<=$_POST['CheckIn']))
+            {
+                echo "<script>alert('Invalid Check-In or/and Check-Out Date(s)');</script>";
+            }
+            else{
+                $_SESSION["cInD"] = $cInD = $_POST['CheckIn'];
+                $_SESSION["cOutD"] = $cOutD = $_POST['CheckOut'];
+                $_SESSION["totDays"] = $totDays = (strtotime($_SESSION["cOutD"]) - strtotime($_SESSION["cInD"]))/(60 * 60 * 24);
+                $_SESSION['payDone'] = NULL;
+            }
         }
     }
     if(empty($_SESSION["cInD"]) || empty($_SESSION["cOutD"])){
@@ -39,6 +41,60 @@
             $cOutD = $_SESSION["cOutD"];
         }
     }
+
+    $prices = [];
+    $dprices = [];
+    $sql = "SELECT * FROM rooms";
+    $results = mysqli_query($conn, $sql);
+    while($row = mysqli_fetch_assoc($results)) {
+        $totRNo[] = $row['room_no'];
+        $totRT[] = $row['room_type'];
+        $prices[] = $row['price'];
+        $dprices[] = $row['discountedPrice'];
+    }
+    
+    $prices = array_unique($prices);
+    $i=0;
+    foreach($prices as $pr){
+        if($i == 0){
+            $pSS = $pr;
+        }
+        elseif($i == 1){
+            $pSD = $pr;
+        }
+        elseif($i == 2){
+            $pDS = $pr;
+        }
+        elseif($i == 3){
+            $pDD = $pr;
+        }
+        elseif($i == 4){
+            $pDSt = $pr;
+        }
+        $i++;
+    }
+
+    $i=0;
+    foreach($dprices as $dpr){
+        if($i == 0){
+            $dpSS = $dpr;
+        }
+        elseif($i == 5){
+            $dpSD = $dpr;
+        }
+        elseif($i == 10){
+            $dpDS = $dpr;
+        }
+        elseif($i == 15){
+            $dpDD = $dpr;
+        }
+        elseif($i == 20){
+            $dpDSt = $dpr;
+        }
+        
+        $i++;
+    }
+
     $noSS = $noSD = $noDS = $noDD = $noDSt = 5;
     if(isset($_POST['reserve'])){
         $nSS = $_POST['nSS'];
@@ -49,27 +105,53 @@
         if($nSS>0){
             $cartItemN[] = "Standard (Single)";
             $cartItemQ[] = $nSS;
-            $cartItemP[] = $nSS*$pSS;
+            if($dpSS>0){
+                $cartItemP[] = $nSS*$dpSS;
+            }
+            else{
+                $cartItemP[] = $nSS*$pSS;
+            }
+            
         }
         if($nSD>0){
             $cartItemN[] = "Standard (Double)";
             $cartItemQ[] = $nSD;
-            $cartItemP[] = $nSD*$pSD;
+            if($dpSD>0){
+                $cartItemP[] = $nSD*$dpSD;
+            }
+            else{
+                $cartItemP[] = $nSD*$pSD;
+            }
         }
         if($nDS>0){
             $cartItemN[] = "Deluxe (Single)";
             $cartItemQ[] = $nDS;
-            $cartItemP[] = $nDS*$pDS;
+            if($dpDS>0){
+                $cartItemP[] = $nDS*$dpDS;
+            }
+            else{
+                $cartItemP[] = $nDS*$pDS;
+            }
         }
         if($nDD>0){
             $cartItemN[] = "Deluxe (Double)";
             $cartItemQ[] = $nDD;
-            $cartItemP[] = $nDD*$pDD;
+            if($dpDD>0){
+                $cartItemP[] = $nDD*$dpDD;
+            }
+            else{
+                $cartItemP[] = $nDD*$pDD;
+            }
         }
         if($nDSt>0){
             $cartItemN[] = "Deluxe Suite";
             $cartItemQ[] = $nDSt;
-            $cartItemP[] = $nDSt*$pDSt;
+            if($dpDSt>0){
+                $cartItemP[] = $nDSt*$dpDSt;
+            }
+            else{
+                $cartItemP[] = $nDSt*$pDSt;
+            }
         }
         $i=0;
         foreach($cartItemP as $ci){
@@ -93,7 +175,7 @@
             $_SESSION['tax'] = $tax;
             $totPrice = $totPrice + $tax;
     }
-        if($m == "Enter Check In and Check Out Dates to Book Rooms"){
+        if(($m == "Enter Check In and Check Out Dates to Book Rooms")){
             echo "<script>alert('$m')</script>";
         }
         elseif(($nSS==0) && ($nSD==0) && ($nDS==0) && ($nDD==0) && ($nDSt==0)){
@@ -135,13 +217,7 @@
             $noDSt--;
         }
     }
-    $sql = "SELECT * FROM rooms";
-    $results = mysqli_query($conn, $sql);
-    
-    while($row = mysqli_fetch_assoc($results)) {
-        $totRNo[] = $row['room_no'];
-        $totRT[] = $row['room_type'];
-    }
+
     foreach($totRNo as $b){
         $f=0;
         foreach($rNo as $a){
@@ -154,6 +230,7 @@
             $avRNo[] = $b;
         }
     }
+
     $_SESSION['avRoomNo'] = $avRNo;
     $_SESSION["noSS"] = $noSS;
     $_SESSION["noSD"] = $noSD;
@@ -165,6 +242,11 @@
     $_SESSION["pDS"] = $pDS;
     $_SESSION["pDD"] = $pDD;
     $_SESSION["pDSt"] = $pDSt;
+    $_SESSION["dpSS"] = $dpSS;
+    $_SESSION["dpSD"] = $dpSD;
+    $_SESSION["dpDS"] = $dpDS;
+    $_SESSION["dpDD"] = $dpDD;
+    $_SESSION["dpDSt"] = $dpDSt;
     $_SESSION["nSS"] = $nSS;
     $_SESSION["nSD"] = $nSD;
     $_SESSION["nDS"] = $nDS;
@@ -198,6 +280,11 @@
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="home.php">Home</i></a>
                 </li>
+                <?php
+                if($_SESSION["admin"]=='YES'){
+                    echo '<li class="nav-item"><a class="nav-link" href="rooms.php">Admin</a></li>';
+                }
+                ?>
                 <li class="nav-item">
                     <a class="nav-link" href="contactt.php">Contact <i class="fa fa-envelope-o" aria-hidden="true"></i></a>
                 </li>
@@ -258,7 +345,16 @@
                         </tr>
                         <tr>
                             <th style="border: 1px solid black; padding-top: 10px; padding-bottom: 10px; padding-left: 20px; padding-right: 20px;">Nightly Price/Room</th>
-                            <td style="border: 1px solid black; padding-top: 10px; padding-bottom: 10px; padding-left: 20px; padding-right: 20px;font-weight: bold;"><i class="fa fa-inr" aria-hidden="true"></i><?php echo $_SESSION['pSS']?></td>
+                            <td style="border: 1px solid black; padding-top: 10px; padding-bottom: 10px; padding-left: 20px; padding-right: 20px;font-weight: bold;">
+                                <?php 
+                                    if($_SESSION["dpSS"]>0){
+                                        echo "<s style='color: darkred;'>&#8377;".$_SESSION['pSS']."</s>&nbsp;&#8377;".$_SESSION["dpSS"];
+                                    }
+                                    else{
+                                        echo "&#8377;".$_SESSION['pSS'];
+                                    }
+                                ?>
+                            </td>
                         </tr>
                         <tr>
                             <th style="border: 1px solid black; padding-top: 10px; padding-bottom: 10px; padding-left: 20px; padding-right: 20px;">Rooms Available</th>
@@ -286,7 +382,17 @@
                         </tr>
                         <tr>
                             <th style="border: 1px solid black; padding-top: 10px; padding-bottom: 10px; padding-left: 20px; padding-right: 20px;">Nightly Price/Room</th>
-                            <td style="border: 1px solid black; padding-top: 10px; padding-bottom: 10px; padding-left: 20px; padding-right: 20px;font-weight: bold;"><i class="fa fa-inr" aria-hidden="true"></i><?php echo $_SESSION['pSD']?></td>
+                            <td style="border: 1px solid black; padding-top: 10px; padding-bottom: 10px; padding-left: 20px; padding-right: 20px;font-weight: bold;">
+                                <?php 
+                                
+                                    if($_SESSION["dpSD"]>0){
+                                        echo "<s style='color: darkred;'>&#8377;".$_SESSION['pSD']."</s>&nbsp;&#8377;".$_SESSION["dpSD"];
+                                    }
+                                    else{
+                                        echo "&#8377;".$_SESSION['pSD'];
+                                    }
+                                ?>
+                            </td>
                         </tr>
                         <tr>
                             <th style="border: 1px solid black; padding-top: 10px; padding-bottom: 10px; padding-left: 20px; padding-right: 20px;">Rooms Available</th>
@@ -314,7 +420,16 @@
                         </tr>
                         <tr>
                             <th style="border: 1px solid black; padding-top: 10px; padding-bottom: 10px; padding-left: 20px; padding-right: 20px;"s>Nightly Price/Room</th>
-                            <td style="border: 1px solid black; padding-top: 10px; padding-bottom: 10px; padding-left: 20px; padding-right: 20px;font-weight: bold;"><i class="fa fa-inr" aria-hidden="true"></i><?php echo $_SESSION['pDS']?></td>
+                            <td style="border: 1px solid black; padding-top: 10px; padding-bottom: 10px; padding-left: 20px; padding-right: 20px;font-weight: bold;">
+                                <?php 
+                                    if($_SESSION["dpDS"]>0){
+                                        echo "<s style='color: darkred;'>&#8377;".$_SESSION['pDS']."</s>&nbsp;&#8377;".$_SESSION["dpDS"];
+                                    }
+                                    else{
+                                        echo "&#8377;".$_SESSION['pDS'];
+                                    }
+                                ?>
+                            </td>
                         </tr>
                         <tr>
                             <th style="border: 1px solid black; padding-top: 10px; padding-bottom: 10px; padding-left: 20px; padding-right: 20px;">Rooms Available</th>
@@ -342,7 +457,16 @@
                         </tr>
                         <tr>
                             <th style="border: 1px solid black; padding-top: 10px; padding-bottom: 10px; padding-left: 20px; padding-right: 20px;">Nightly Price/Room</th>
-                            <td style="border: 1px solid black; padding-top: 10px; padding-bottom: 10px; padding-left: 20px; padding-right: 20px;font-weight: bold;"><i class="fa fa-inr" aria-hidden="true"></i><?php echo $_SESSION['pDD']?></td>
+                            <td style="border: 1px solid black; padding-top: 10px; padding-bottom: 10px; padding-left: 20px; padding-right: 20px;font-weight: bold;">
+                                <?php 
+                                    if($_SESSION["dpDD"]>0){
+                                        echo "<s style='color: darkred;'>&#8377;".$_SESSION['pDD']."</s>&nbsp;&#8377;".$_SESSION["dpDD"];
+                                    }
+                                    else{
+                                        echo "&#8377;".$_SESSION['pDD'];
+                                    }
+                                ?>
+                            </td>
                         </tr>
                         <tr>
                             <th style="border: 1px solid black; padding-top: 10px; padding-bottom: 10px; padding-left: 20px; padding-right: 20px;">Rooms Available</th>
@@ -370,7 +494,16 @@
                         </tr>
                         <tr>
                             <th style="border: 1px solid black; padding-top: 10px; padding-bottom: 10px; padding-left: 20px; padding-right: 20px;">Nightly Price/Room</th>
-                            <td style="border: 1px solid black; padding-top: 10px; padding-bottom: 10px; padding-left: 20px; padding-right: 20px;font-weight: bold;"><i class="fa fa-inr" aria-hidden="true"></i><?php echo $_SESSION['pDSt']?></td>
+                            <td style="border: 1px solid black; padding-top: 10px; padding-bottom: 10px; padding-left: 20px; padding-right: 20px;font-weight: bold;">
+                                <?php 
+                                    if($_SESSION["dpDSt"]>0){
+                                        echo "<s style='color: darkred;'>&#8377;".$_SESSION['pDSt']."</s>&nbsp;&#8377;".$_SESSION["dpDSt"];
+                                    }
+                                    else{
+                                        echo "&#8377;".$_SESSION['pDSt'];
+                                    }
+                                ?>
+                            </td>
                         </tr>
                         <tr>
                             <th style="border: 1px solid black; padding-top: 10px; padding-bottom: 10px; padding-left: 20px; padding-right: 20px;">Rooms Available</th>
