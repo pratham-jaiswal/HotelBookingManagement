@@ -10,6 +10,7 @@ if(!isset($_SESSION['username'])){
     exit();
 }
 require_once "config.php";
+date_default_timezone_set("Asia/Kolkata");
 $avRNo = $_SESSION['avRoomNo'];
 $totDays = $_SESSION["totDays"];
 $nSS = $_SESSION["nSS"];
@@ -109,7 +110,7 @@ if($_SERVER['REQUEST_METHOD']=="POST"){
 
 
     if(empty(trim($_POST['email']))){
-        $email_err = "Email on Card cannot be blank";
+        $email_err = "Email cannot be blank";
     }
     else{
         $sql = "SELECT id FROM bookings WHERE email = ?";
@@ -135,30 +136,61 @@ if($_SERVER['REQUEST_METHOD']=="POST"){
         $revRNo = $_SESSION['revRooms'];
         foreach($revRNo as $b){
             $f=0;
-            $sql = "INSERT INTO bookings (name, email, checkInDate, checkOutDate, room_no, room_type, username) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            $sql = "INSERT INTO bookings (name, email, checkInDate, checkOutDate, room_no, room_type, username, booking_id, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt = mysqli_prepare($conn, $sql);
             if($stmt){
-                mysqli_stmt_bind_param($stmt, "sssssss", $param_name, $param_email, $param_checkInDate, $param_checkOutDate, $param_room_no, $param_room_type, $param_username);
+                mysqli_stmt_bind_param($stmt, "sssssssss", $param_name, $param_email, $param_checkInDate, $param_checkOutDate, $param_room_no, $param_room_type, $param_username, $param_booking_id, $param_price);
                 $param_name = $name;
                 $param_email = $email;
                 $param_checkInDate = $cInD;
                 $param_checkOutDate = $cOutD;
                 $param_room_no = $b;
                 $param_username = $username;
+                $param_booking_id = date('dmYhis');
                 if(($b>100) && ($b<=105)){
                     $revRt = "Standard (Single)";
+                    if($_SESSION['dpSS']>0){
+                        $param_price = $_SESSION['dpSS'];
+                    }
+                    else{
+                        $param_price = $_SESSION['pSS'];
+                    }
                 }
                 elseif(($b>200) && ($b<=205)){
                     $revRt = "Standard (Double)";
+                    if($_SESSION['dpSD']>0){
+                        $param_price = $_SESSION['dpSD'];
+                    }
+                    else{
+                        $param_price = $_SESSION['pSD'];
+                    }
                 }
                 elseif(($b>300) && ($b<=305)){
                     $revRt = "Deluxe (Single)";
+                    if($_SESSION['dpDS']>0){
+                        $param_price = $_SESSION['dpDS'];
+                    }
+                    else{
+                        $param_price = $_SESSION['pDS'];
+                    }
                 }
                 elseif(($b>400) && ($b<=405)){
                     $revRt = "Deluxe (Double)";
+                    if($_SESSION['dpDD']>0){
+                        $param_price = $_SESSION['dpDD'];
+                    }
+                    else{
+                        $param_price = $_SESSION['pDD'];
+                    }
                 }
                 elseif(($b>500) && ($b<=505)){
                     $revRt = "Deluxe Suite";
+                    if($_SESSION['dpDSt']>0){
+                        $param_price = $_SESSION['dpDSt'];
+                    }
+                    else{
+                        $param_price = $_SESSION['pDSt'];
+                    }
                 }
                 $param_room_type = $revRt;
 
@@ -240,7 +272,7 @@ foreach($cartItemN as $cn){
     $html .= '<tr>';
     $html .= '<td style="font-size: 16.5px; padding-right: 30px; padding-bottom: 10px; padding-top: 10px;">' . $cn . '</td>';
     $html .= '<td style="font-size: 16.5px; padding-left: 30px; padding-bottom: 10px; padding-top: 10px;">' . $cartItemQ[$i] . '</td>';
-    $html .= '<td style="font-size: 16.5px; padding-left: 30px; padding-bottom: 10px; padding-top: 10px;"><i class="fa fa-inr" aria-hidden="true"></i>' . $cartItemP[$i]*$_SESSION["totDays"] . '</td>';
+    $html .= '<td style="font-size: 16.5px; padding-left: 30px; padding-bottom: 10px; padding-top: 10px;">&#8377;' . $cartItemP[$i]*$_SESSION["totDays"] . '</td>';
     $html .= '</tr>';
     $i++;
 }
@@ -248,17 +280,17 @@ foreach($cartItemN as $cn){
 $html .= '<tr>';
 $html .= '<td style="font-size: 16.5px; font-weight: bold;padding-right: 30px; border-top: 1px solid black; padding-bottom: 10px; padding-top: 10px;">Total</td>';
 $html .= '<td style="font-size: 16.5px; font-weight: bold;padding-left: 30px; border-top: 1px solid black; padding-bottom: 10px; padding-top: 10px;">'.$_SESSION["nSS"]+$_SESSION["nSD"]+$_SESSION["nDS"]+$_SESSION["nDD"]+$_SESSION["nDSt"].'</td>';
-$html .= '<td style="font-size: 16.5px; font-weight: bold;padding-left: 30px; border-top: 1px solid black; padding-bottom: 10px; padding-top: 10px;"><i class="fa fa-inr" aria-hidden="true"></i>'.$_SESSION["totExclTax"].'</td>';
+$html .= '<td style="font-size: 16.5px; font-weight: bold;padding-left: 30px; border-top: 1px solid black; padding-bottom: 10px; padding-top: 10px;">&#8377;'.$_SESSION["totExclTax"].'</td>';
 $html .= '</tr>';
 $html .= '<tr>';
 $html .= '<td style="font-size: 16.5px; padding-right: 30px; padding-bottom: 10px;">Tax ('.$_SESSION["taxp"].'%)</td>';
 $html .= '<td style="font-size: 16.5px; padding-left: 30px; padding-bottom: 10px;"> </td>';
-$html .= '<td style="font-size: 16.5px; padding-left: 30px; padding-bottom: 10px;"><i class="fa fa-inr" aria-hidden="true"></i>'.$_SESSION["tax"].'</td>';
+$html .= '<td style="font-size: 16.5px; padding-left: 30px; padding-bottom: 10px;">&#8377;'.$_SESSION["tax"].'</td>';
 $html .= '</tr>';
 $html .= '<tr>';
 $html .= '<td style="font-weight: bold; padding-right: 30px; border-top: 1px solid black; padding-top: 10px; font-size: 16.5px;">Net Total</td>';
 $html .= '<td style="font-weight: bold; padding-left: 30px; border-top: 1px solid black; padding-top: 10px; font-size: 16.5px;">'.$_SESSION["nSS"]+$_SESSION["nSD"]+$_SESSION["nDS"]+$_SESSION["nDD"]+$_SESSION["nDSt"].'</td>';
-$html .= '<td style="font-size: 16.5px; font-weight: bold; padding-left: 30px; border-top: 1px solid black; padding-top: 10px;"><i class="fa fa-inr" aria-hidden="true"></i>'.$_SESSION["totPrice"].'</td>';
+$html .= '<td style="font-size: 16.5px; font-weight: bold; padding-left: 30px; border-top: 1px solid black; padding-top: 10px;">&#8377;'.$_SESSION["totPrice"].'</td>';
 $html .= '</tr>';
 
 $html .= '</table>';
@@ -289,6 +321,11 @@ $_SESSION['cartTable'] = $html;
                 <li class="nav-item">
                     <a class="nav-link" href="home.php">Home</i></a>
                 </li>
+                <?php
+                if($_SESSION["admin"]=='YES'){
+                    echo '<li class="nav-item"><a class="nav-link" href="rooms.php">Admin</a></li>';
+                }
+                ?>
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="payment.php">Payment</i></a>
                 </li>
