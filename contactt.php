@@ -140,7 +140,7 @@ if($_SERVER['REQUEST_METHOD']=="POST"){
                 </li>
                 <?php
                 if($_SESSION["admin"]=='YES'){
-                    echo '<li class="nav-item"><a class="nav-link" href="rooms.php">Admin</a></li>';
+                    echo '<li class="nav-item"><a class="nav-link" href="dashboard.php">Admin</a></li>';
                 }
                 ?>
                 <li class="nav-item">
