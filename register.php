@@ -3,7 +3,7 @@ session_start();
 require_once "config.php";
 if(isset($_SESSION['username'])){
     if($_SESSION["admin"]=='YES'){
-        header("location: rooms.php");
+        header("location: dashboard.php");
     }
     else{
         header("location: home.php");
@@ -46,7 +46,7 @@ if($_SERVER['REQUEST_METHOD']=="POST"){
     else{
         $sql = "SELECT id FROM loginform WHERE lname = ?";
         $stmt = mysqli_prepare($conn, $sql);
-        if($stmt){
+        if(mysqli_num_rows($results)==0):{
             mysqli_stmt_bind_param($stmt, "s", $param_lname);
 
             //Set the value of param lname
