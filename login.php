@@ -5,7 +5,7 @@ session_start();
 //Check if user is already logged in
 if(isset($_SESSION['username'])){
     if($_SESSION["admin"]=='YES'){
-        header("location: rooms.php");
+        header("location: dashboard.php");
     }
     else{
         header("location: home.php");
@@ -64,7 +64,7 @@ else{
                         $_SESSION["admin"] = $admin;
                         $_SESSION["created_at"] = $created_at;
                         if($_SESSION["admin"]=='YES'){
-                            header("location: rooms.php");
+                            header("location: dashboard.php");
                         }
                         else{
                             header("location: home.php");
