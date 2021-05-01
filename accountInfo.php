@@ -11,151 +11,6 @@
     }
 
     $username = $_SESSION['username'];
-    $bookingId = [];
-    $sql = "SELECT * FROM bookings WHERE username='".$username."'";
-    $results = mysqli_query($conn, $sql);
-    if(!empty($results)){
-        while($row = mysqli_fetch_assoc($results)) {
-            $bookingId[] = $row['booking_id'];
-        }
-    }
-    $html = "<h2>Bookings</h2><hr style='color: black; height: 1.5px; opacity: 0.6;'>";
-    if(empty($bookingId))
-    {
-        $html .=  "<h4 style='color: grey;'>No bookings yet!</h4><br><br><br><br><br><br><br>";
-    }
-    else{
-        $bookingId = array_unique($bookingId);
-        
-        $c = 0;
-        foreach($bookingId as $bid){
-            $sql = "SELECT * FROM bookings WHERE booking_id=$bid";
-            $results = mysqli_query($conn, $sql);
-            $room_no = [];
-            $checkInDate = [];
-            $checkOutDate = [];
-            $room_type = [];
-            $reserved_on = [];
-            $username = [];
-            $name = [];
-            $email = [];
-            $price = [];
-            if(!empty($results)){
-                $i=0;
-                while($row = mysqli_fetch_assoc($results)){
-                    if($i==0){
-                        $checkInDate[] = $row['checkInDate'];
-                        $checkOutDate[] = $row['checkOutDate'];
-                        $reserved_on[] = $row['reserved_on'];
-                        $username[] = $row['username'];
-                        $name[] = $row['name'];
-                        $email[] = $row['email'];
-                        $i=1;
-                    }
-                    $price[] = $row['price'];
-                    $room_type[] = $row['room_type'];
-                    $room_no[] = $row['room_no'];
-                }
-                $totDays = (strtotime($checkOutDate[0]) - strtotime($checkInDate[0]))/(60 * 60 * 24);
-                $room_type = array_unique($room_type);
-                $price = array_unique($price);
-
-                $html .= '<div class="row"><div class="col-md-6"><h4>Booking ID: '.$bid.'</h4><br>';
-                $html .= '</div><div class="col-md-6"><button type="submit" name="print" onclick="printArea('.$bid.')" class="btn btn-primary" style="float: right;">View</button></div>';
-                $html .= "</div><div class='container mt-4' id='".$bid."' style='width: 800px; display: none;'>";
-                $html .= '<h1 style="font-family: Brush Script MT; font-size: 50px; text-align: center;">Hotel Booking Management System</h1><hr style="color: black; height: 1.5px; opacity: 1;"><br>';
-                $html .= "<div class='row'><div class='col-md-6'>";
-                $html .= "Booking ID: ".$bid."</div><div class='col-md-6'>";
-                $html .= "Reserved On: ".$reserved_on[$c]."</div><div class='col-md-6'>Name: ".$name[$c]."</div><div class='col-md-6'>Email: ".$email[$c]."</div>";
-                $html .= "<div class='col-md-6'>Check-In Date: ".$checkInDate[0]."</div><div class='col-md-6'>Check-Out Date: ".$checkOutDate[0]."</div></div>";
-                $html .= '<br><table style="width: 100%; border: 1px solid black">';
-                $html .= '<tr>';
-                $html .= '<th style="padding-left: 30px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;">Room Type</th>';
-                $html .= '<th style="padding-left: 30px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;">Rooms Numbers</th>';
-                $html .= '<th style="padding-left: 30px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;">Net Price</th>';
-                $html .= '</tr>';
-                $pi = 0;
-                $totpr = 0;
-                foreach($room_type as $rt){
-                    $html .= '<tr>';
-                    $html .= '<td style="padding-left: 30px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;">'.$rt.'</td>';
-                    $html .= '<td style="padding-left: 30px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;">';
-                    $nr = 0;
-                    
-                    foreach($room_no as $rn){
-                        if((($rn>100)&&($rn<=105))&&($rt=='Standard (Single)')){
-                            $html .= $rn." ";
-                            $nr++;
-                        }
-                        elseif((($rn>200)&&($rn<=205))&&($rt=='Standard (Double)')){
-                            $html .= $rn." ";
-                            $nr++;
-                        }
-                        elseif((($rn>300)&&($rn<=305))&&($rt=='Deluxe (Single)')){
-                            $html .= $rn." ";
-                            $nr++;
-                        }
-                        elseif((($rn>400)&&($rn<=405))&&($rt=='Deluxe (Double)')){
-                            $html .= $rn." ";
-                            $nr++;
-                        }
-                        elseif((($rn>500)&&($rn<=505))&&($rt=='Deluxe Suite')){
-                            $html .= $rn." ";
-                            $nr++;
-                        }
-                    }
-                    $a = 0;
-                    foreach($price as $p){
-                        
-                        if($a==$pi){
-                            $html .= '</td><td style="padding-left: 30px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;">&#8377;'.$nr*$p*$totDays.'</td>';
-                            $totpr = $totpr + ($nr*$p*$totDays);
-                        }
-                        $a++;
-                    }
-                    $pi++;
-                    $html .= '</tr>';
-                }
-                $html .= '<tr>';
-                $html .= '<td style="font-weight: bold; padding-left: 30px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;">Total</td>';
-                $html .= '<td style="font-weight: bold; padding-left: 30px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;"></td>';
-                $html .= '<td style="font-weight: bold; padding-left: 30px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;">'.$totpr.'</td>';
-                $html .= '</tr>';
-
-                if(($totpr>0)&&($totpr<=1000)){
-                    $tax = 0;
-                    $taxp = 0;
-                }
-                elseif(($totpr>1000) && ($totpr<=7500)){
-                    $tax = $totpr*(12/100);
-                    $taxp = 12;
-                }
-                else{
-                    $tax = $totpr*(18/100);
-                    $taxp = 18;
-                }
-                $totpr = $totpr + $tax;
-
-
-                $html .= '<tr>';
-                $html .= '<td style="padding-left: 30px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;">Tax ('.$taxp.'%)</td>';
-                $html .= '<td style="padding-left: 30px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;"></td>';
-                $html .= '<td style="padding-left: 30px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;">&#8377;'.$tax.'</td>';
-                $html .= '</tr>';
-                $html .= '<tr>';
-                $html .= '<td style="font-weight: bold;padding-left: 30px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;">Net Total</td>';
-                $html .= '<td style="font-weight: bold;padding-left: 30px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;"></td>';
-                $html .= '<td style="font-weight: bold;padding-left: 30px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;">&#8377;'.$totpr.'</td>';
-                $html .= '</tr>';
-                $html .= '</table>';
-                $html .= '<br><br>';
-                $html .= '</div>';        
-            }
-        }
-    }
-
-
-
 ?>
 
 <!doctype html>
@@ -195,7 +50,7 @@
                 </li>
                 <?php
                 if($_SESSION["admin"]=='YES'){
-                    echo '<li class="nav-item"><a class="nav-link" href="rooms.php">Admin</a></li>';
+                    echo '<li class="nav-item"><a class="nav-link" href="dashboard.php">Admin</a></li>';
                 }
                 ?>
                 <li class="nav-item">
@@ -247,10 +102,248 @@
             <td style="border: 1px solid black; border-left: none; padding-top: 15px; padding-bottom: 15px; padding-right: 20px; width: 100%; text-align: right"><?php echo $_SESSION["created_at"]?></td>
         </tr>
     </table>
+</div>
     <br><br>
+<?php if($_SESSION["admin"]=='NO'): ?>
     <form action="" method="post">
-        <?php echo $html; ?>
+        <?php
+            date_default_timezone_set("Asia/Calcutta");
+            $dt = date('Y-m-d');
+            $sql = "SELECT * FROM bookings WHERE username='".$_SESSION['username']."' AND checkInDate<='$dt' AND checkOutDate>='$dt'";
+            $results = mysqli_query($conn, $sql);
+            ?>
+            <div class="container mt-4" style="width: 1200px;">
+            <h2>On-going Reservations</h2>
+            <hr style='color: black; height: 1.5px;'>
+            <?php
+            if(mysqli_num_rows($results)==0): ?>
+                <h4 style='color: grey;'>No On-going Reservations!</h4>
+            <?php else: ?>
+            <?php $bkd = ''; $f=0;
+            while($bk = mysqli_fetch_assoc($results)): 
+                if($bkd!=$bk['booking_id']): 
+                    if($f==1): $f=0;?>
+                        </table>
+                        </div><br>
+                    <?php endif; ?>
+                    <?php $bkd=$bk['booking_id']; $f=1;
+                ?>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4>Booking ID: <?= $bkd?></h4>
+                        </div>
+                        <?php if($bk['checked_in']=='YES'): ?>
+                        <div class="col-md-4">
+                            <h5 style='color: teal;'>Checked In</h5>
+                        </div>
+                        <div class="col-md-1">
+                        <?php else: ?>
+                        <div class="col-md-5">
+                        <?php endif; ?>
+                            <button type="submit" name="print" onclick="printArea(<?php echo $bkd; ?>)" class="btn btn-primary" style="float: right;">View</button>
+                        </div>
+                        <?php if($bk['checked_in']=='NO'): ?>
+                        <div class="col-md-1">
+                            <a href="delete.php?booking_id=<?=$bk['booking_id']?>" class="cancel" onmouseover="this.style.color='rgb(170, 0, 0)';return true;" onmouseout="this.style.color='red';return true;" style="color: red; font-size: 16.5px;">Cancel</a>
+                        </div>
+                        <?php else: ?>
+                        <div class="col-md-1">
+                            <a href="services.php?booking_id=<?=$bk['booking_id']?>" class="services" onmouseover="this.style.color='blueviolet';return true;" onmouseout="this.style.color='purple';return true;" style="color: purple; font-size: 16.5px;">Services</a>
+                        </div>
+                        <?php endif; ?>
+                    </div>
+                    <div class='container mt-4' id='<?=$bkd?>' style='width: 800px; display: none;'>
+                        <h1 style="font-family: Brush Script MT; font-size: 50px; text-align: center;">Hotel Booking Management System</h1>
+                        <hr style="color: black; height: 1.5px; opacity: 1;">
+                        <br>
+                        <div class='row'>
+                            <div class='col-md-6'>
+                                Booking ID: <?= $bk['booking_id']?>
+                            </div>
+                            <div class='col-md-6'>
+                                Reserved On: <?= $bk['reserved_on']?>
+                            </div>
+                            <div class='col-md-6'>
+                                Name: <?= $bk['name']?>
+                            </div>
+                            <div class='col-md-6'>
+                                Email: <?= $bk['email']?>
+                            </div>
+                            <div class='col-md-6'>
+                                Check-In Date: <?= $bk['checkInDate']?>
+                            </div>
+                            <div class='col-md-6'>
+                                Check-Out Date: <?= $bk['checkOutDate']?>
+                            </div>
+                        </div>
+                        <br>
+                        <table style="width: 100%; border: 1px solid black">
+                            <tr>
+                                <th style="padding-left: 30px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;">Room Type</th>
+                                <th style="padding-left: 30px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;">Rooms No.</th>
+                                <th style="padding-left: 30px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;">Nightly Price</th>
+                            </tr>
+                <?php endif; ?>
+                            <tr>
+                                <th style="padding-left: 30px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;"><?= $bk['room_type'] ?></th>
+                                <th style="padding-left: 30px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;"><?= $bk['room_no'] ?></th>
+                                <th style="padding-left: 30px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;"><?= $bk['price'] ?></th>
+                            </tr>
+            <?php endwhile; ?>
+        <?php endif; ?>
+        </table>
+        </div></div><br>
+
+        <?php
+            date_default_timezone_set("Asia/Calcutta");
+            $dt = date('Y-m-d');
+            $sql = "SELECT * FROM bookings WHERE username='".$_SESSION['username']."' AND checkInDate>'$dt'";
+            $results = mysqli_query($conn, $sql);
+            ?>
+            <div class="container mt-4" style="width: 1200px;">
+            <h2>Upcoming Reservations</h2>
+            <hr style='color: black; height: 1.5px;'>
+            <?php
+            if(mysqli_num_rows($results)==0): ?>
+                <h4 style='color: grey;'>No Upcoming Reservations!</h4>
+            <?php else: ?>
+            <?php $bkd = ''; $f=0;
+            while($bk = mysqli_fetch_assoc($results)): 
+                if($bkd!=$bk['booking_id']): 
+                    if($f==1): $f=0;?>
+                        </table>
+                        </div><br>
+                    <?php endif; ?>
+                    <?php $bkd=$bk['booking_id']; $f=1;
+                ?>
+                    <div class="row">
+                        <div class="col-md-10">
+                            <h4>Booking ID: <?= $bkd?></h4>
+                        </div>
+                        <div class="col-md-1">
+                            <button type="submit" name="print" onclick="printArea(<?php echo $bkd; ?>)" class="btn btn-primary" style="float: right;">View</button>
+                        </div>
+                        <div class="col-md-1">
+                            <a href="delete.php?booking_id=<?=$bk['booking_id']?>" class="cancel" onmouseover="this.style.color='rgb(170, 0, 0)';return true;" onmouseout="this.style.color='red';return true;" style="color: red; font-size: 16.5px;">Cancel</a>
+                        </div>
+                    </div>
+                    <div class='container mt-4' id='<?=$bkd?>' style='width: 800px; display: none;'>
+                        <h1 style="font-family: Brush Script MT; font-size: 50px; text-align: center;">Hotel Booking Management System</h1>
+                        <hr style="color: black; height: 1.5px; opacity: 1;">
+                        <br>
+                        <div class='row'>
+                            <div class='col-md-6'>
+                                Booking ID: <?= $bk['booking_id']?>
+                            </div>
+                            <div class='col-md-6'>
+                                Reserved On: <?= $bk['reserved_on']?>
+                            </div>
+                            <div class='col-md-6'>
+                                Name: <?= $bk['name']?>
+                            </div>
+                            <div class='col-md-6'>
+                                Email: <?= $bk['email']?>
+                            </div>
+                            <div class='col-md-6'>
+                                Check-In Date: <?= $bk['checkInDate']?>
+                            </div>
+                            <div class='col-md-6'>
+                                Check-Out Date: <?= $bk['checkOutDate']?>
+                            </div>
+                        </div>
+                        <br>
+                        <table style="width: 100%; border: 1px solid black">
+                            <tr>
+                                <th style="padding-left: 30px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;">Room Type</th>
+                                <th style="padding-left: 30px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;">Rooms No.</th>
+                                <th style="padding-left: 30px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;">Nightly Price</th>
+                            </tr>
+                <?php endif; ?>
+                            <tr>
+                                <th style="padding-left: 30px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;"><?= $bk['room_type'] ?></th>
+                                <th style="padding-left: 30px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;"><?= $bk['room_no'] ?></th>
+                                <th style="padding-left: 30px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;"><?= $bk['price'] ?></th>
+                            </tr>
+            <?php endwhile; ?>
+        <?php endif; ?>
+        </table>
+        </div></div><br>
+
+
+        <?php
+            date_default_timezone_set("Asia/Calcutta");
+            $dt = date('Y-m-d');
+            $sql = "SELECT * FROM bookings WHERE username='".$_SESSION['username']."' AND checkOutDate<'$dt'";
+            $results = mysqli_query($conn, $sql);
+            ?>
+            <div class="container mt-4" style="width: 1200px;">
+            <h2>Past Reservations</h2>
+            <hr style='color: black; height: 1.5px;'>
+            <?php
+            if(mysqli_num_rows($results)==0): ?>
+                <h4 style='color: grey;'>No Past Reservations!</h4>
+            <?php else: ?>
+            <?php $bkd = ''; $f=0;
+            while($bk = mysqli_fetch_assoc($results)): 
+                if($bkd!=$bk['booking_id']): 
+                    if($f==1): $f=0;?>
+                        </table>
+                        </div><br>
+                    <?php endif; ?>
+                    <?php $bkd=$bk['booking_id']; $f=1;
+                ?>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4>Booking ID: <?= $bkd?></h4>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="submit" name="print" onclick="printArea(<?php echo $bkd; ?>)" class="btn btn-primary" style="float: right; margin-right: 20px;">View</button>
+                        </div>
+                    </div>
+                    <div class='container mt-4' id='<?=$bkd?>' style='width: 800px; display: none;'>
+                        <h1 style="font-family: Brush Script MT; font-size: 50px; text-align: center;">Hotel Booking Management System</h1>
+                        <hr style="color: black; height: 1.5px; opacity: 1;">
+                        <br>
+                        <div class='row'>
+                            <div class='col-md-6'>
+                                Booking ID: <?= $bk['booking_id']?>
+                            </div>
+                            <div class='col-md-6'>
+                                Reserved On: <?= $bk['reserved_on']?>
+                            </div>
+                            <div class='col-md-6'>
+                                Name: <?= $bk['name']?>
+                            </div>
+                            <div class='col-md-6'>
+                                Email: <?= $bk['email']?>
+                            </div>
+                            <div class='col-md-6'>
+                                Check-In Date: <?= $bk['checkInDate']?>
+                            </div>
+                            <div class='col-md-6'>
+                                Check-Out Date: <?= $bk['checkOutDate']?>
+                            </div>
+                        </div>
+                        <br>
+                        <table style="width: 100%; border: 1px solid black">
+                            <tr>
+                                <th style="padding-left: 30px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;">Room Type</th>
+                                <th style="padding-left: 30px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;">Rooms No.</th>
+                                <th style="padding-left: 30px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;">Nightly Price</th>
+                            </tr>
+                <?php endif; ?>
+                            <tr>
+                                <th style="padding-left: 30px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;"><?= $bk['room_type'] ?></th>
+                                <th style="padding-left: 30px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;"><?= $bk['room_no'] ?></th>
+                                <th style="padding-left: 30px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;"><?= $bk['price'] ?></th>
+                            </tr>
+            <?php endwhile; ?>
+        <?php endif; ?>
+        </table>
+        </div></div><br>
+
     </form>
+<?php endif; ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
   </body>
 </html>
