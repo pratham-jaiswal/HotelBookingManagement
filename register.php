@@ -46,7 +46,7 @@ if($_SERVER['REQUEST_METHOD']=="POST"){
     else{
         $sql = "SELECT id FROM loginform WHERE lname = ?";
         $stmt = mysqli_prepare($conn, $sql);
-        if(mysqli_num_rows($results)==0):{
+        if(mysqli_num_rows($results)==0){
             mysqli_stmt_bind_param($stmt, "s", $param_lname);
 
             //Set the value of param lname

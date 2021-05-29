@@ -1,11 +1,8 @@
 <?php
 require_once "config.php";
+session_start();
 $name = $email = $message = "";
 $name_err = $email_err = $message_err = "";
-if(isset($_SESSION['username'])){
-    header("location: contactt.php");
-    exit();
-}
 //name validation
 if($_SERVER['REQUEST_METHOD']=="POST"){
     //Check if name is empty
@@ -131,6 +128,7 @@ if($_SERVER['REQUEST_METHOD']=="POST"){
         <div class="container-fluid">
             <a class="navbar-brand" href="#">Hotel Booking Management</a>
             <ul class="navbar-nav">
+            <?php if(!isset($_SESSION['username'])): ?>
                 <li class="nav-item">
                     <a class="nav-link" href="register.php">Register <i class="fa fa-user-plus" aria-hidden="true"></i></a>
                 </li>
@@ -140,6 +138,25 @@ if($_SERVER['REQUEST_METHOD']=="POST"){
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="contact.php">Contact <i class="fa fa-envelope-o" aria-hidden="true"></i></a>
                 </li>
+            <?php else: ?>
+                <li class="nav-item">
+                    <a class="nav-link" href="accountInfo.php"><?php echo $_SESSION['fname']?> <i class="fa fa-user" aria-hidden="true"></i></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="home.php">Home</i></a>
+                </li>
+                <?php if($_SESSION["admin"]=='YES'): ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="dashboard.php">Admin</a>
+                    </li>
+                <?php endif; ?>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="contact.php">Contact <i class="fa fa-envelope-o" aria-hidden="true"></i></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="logout.php">Logout <i class="fa fa-sign-out" aria-hidden="true"></i></a>
+                </li>
+            <?php endif; ?>
             </ul>
         </div>
     </nav>

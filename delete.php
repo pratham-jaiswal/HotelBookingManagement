@@ -1,5 +1,6 @@
 <?php
 require_once "config.php";
+session_start();
 if (isset($_GET['id'])){
     $sql = 'SELECT * FROM bookings WHERE id = '.$_GET['id'];
     $results = mysqli_query($conn, $sql);

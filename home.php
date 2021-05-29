@@ -5,7 +5,7 @@
         exit();
     }
     if(isset($_SESSION['payDone'])){
-        $_SESSION['revRooms'] = $_SESSION["cInD"] = $_SESSION["cOutD"] = NULL;
+        $_SESSION['payDone'] = $_SESSION['revRooms'] = $_SESSION["cInD"] = $_SESSION["cOutD"] = NULL;
     }
     require_once "config.php";
     $cInD = $cOutD = "";
@@ -182,7 +182,7 @@
             echo "<script>alert('Select atleast one room to proceed')</script>";
         }
         else{
-            $_SESSION['payDone']=NULL;
+            $_SESSION['payCart'] = "Reservations";
             header("location: payment.php");
         }
     }
@@ -286,7 +286,7 @@
                 }
                 ?>
                 <li class="nav-item">
-                    <a class="nav-link" href="contactt.php">Contact <i class="fa fa-envelope-o" aria-hidden="true"></i></a>
+                    <a class="nav-link" href="contact.php">Contact <i class="fa fa-envelope-o" aria-hidden="true"></i></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="logout.php">Logout <i class="fa fa-sign-out" aria-hidden="true"></i></a>
@@ -311,7 +311,7 @@
         font-size: 200px; font-family:brush script mt">Welcome</h1>
     </div>
     
-    <div class="container mt-4" style="width: 1000px;">
+    <div class="container mt-4" style="width: 1500px;">
         <h2>Book Rooms</h2>
         <hr style="color: black; height: 1.5px;">
         
@@ -333,10 +333,10 @@
             <br>
             <h4 style="text-align: center;"><?php echo $m?></h4>
             <div class="row" style="background: orange; margin: 2%; border-radius: 20px;">
-                <div class="col-md-6" style="padding: 30px;">
-                    <img src="https://i.imgur.com/bUisFpo.png" title="source: imgur.com" style="width: 100%;border: 4px solid white; border-radius: 10px;"/>
+                <div class="col-md-4" style="padding: 30px;">
+                    <img src="https://i.imgur.com/bUisFpo.png" title="source: imgur.com" style="width: 100%; border: 4px solid white; border-radius: 10px; margin-top: 12px;"/>
                 </div>
-                <div class="col-md-6" style="padding: 30px;">
+                <div class="col-md-4" style="padding: 30px;">
                     <h3>Standard (Single)</h3>
                     <table>
                         <tr>
@@ -368,12 +368,22 @@
                         </tr>
                     </table>
                 </div>
+                <div class="col-md-4" style="padding: 40px; padding-top: 35px;">
+                <h4>Room Features:</h4>
+                    <div style="font-size: 17px; border: 1px solid black; padding: 10px; padding-bottom: 5px; font-style: italic;">
+                        <ul>
+                        <li>Single Bed</li>
+                        <li>1 Person/Room</li>
+                        <li>22 inch digital TV</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
             <div class="row" style="background: orange; margin: 2%; border-radius: 20px;">
-                <div class="col-md-6" style="padding: 30px;">
-                    <img src="https://i.imgur.com/CiFTH6P.png" title="source: imgur.com" style="width: 100%; border: 4px solid white; border-radius: 10px;"/>
+                <div class="col-md-4" style="padding: 30px;">
+                    <img src="https://i.imgur.com/CiFTH6P.png" title="source: imgur.com" style="width: 100%; border: 4px solid white; border-radius: 10px; margin-top: 12px;"/>
                 </div>
-                <div class="col-md-6" style="padding: 30px;">
+                <div class="col-md-4" style="padding: 30px;">
                     <h3>Standard (Double)</h3>
                     <table>
                         <tr>
@@ -406,12 +416,22 @@
                         </tr>
                     </table>
                 </div>
+                <div class="col-md-4" style="padding: 40px; padding-top: 35px;">
+                <h4>Room Features:</h4>
+                    <div style="font-size: 17px; border: 1px solid black; padding: 10px; padding-bottom: 5px; font-style: italic;">
+                        <ul>
+                        <li>Double Bed</li>
+                        <li>2 People/Room</li>
+                        <li>22 inch digital TV</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
             <div class="row" style="background: orange; margin: 2%; border-radius: 20px;">
-                <div class="col-md-6" style="padding: 30px;">
-                    <img src="https://i.imgur.com/ZgBQnwI.png" title="source: imgur.com" style="width: 100%; border: 4px solid white; border-radius: 10px;"/>
+                <div class="col-md-4" style="padding: 30px;">
+                    <img src="https://i.imgur.com/ZgBQnwI.png" title="source: imgur.com" style="width: 100%; border: 4px solid white; border-radius: 10px; margin-top: 12px;"/>
                 </div>
-                <div class="col-md-6" style="padding: 30px;">
+                <div class="col-md-4" style="padding: 30px;">
                     <h3>Deluxe (Single)</h3>
                     <table>
                         <tr>
@@ -443,12 +463,24 @@
                         </tr>
                     </table>
                 </div>
+                <div class="col-md-4" style="padding: 40px; padding-top: 35px;">
+                <h4>Room Features:</h4>
+                    <div style="font-size: 17px; border: 1px solid black; padding: 10px; padding-bottom: 5px; font-style: italic;">
+                        <ul>
+                        <li>Single Bed</li>
+                        <li>1 Person/Room</li>
+                        <li>32 inch digital TV</li>
+                        <li>AC from 9am to 5pm and 10pm-6am</li>
+                        <li>WiFi available 24/7</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
             <div class="row" style="background: orange; margin: 2%; border-radius: 20px;">
-                <div class="col-md-6" style="padding: 30px;">
-                    <img src="https://i.imgur.com/9Z3O837.png" title="source: imgur.com" style="width: 100%; border: 4px solid white; border-radius: 10px;"/>
+                <div class="col-md-4" style="padding: 30px;">
+                    <img src="https://i.imgur.com/9Z3O837.png" title="source: imgur.com" style="width: 100%; border: 4px solid white; border-radius: 10px; margin-top: 12px;"/>
                 </div>
-                <div class="col-md-6" style="padding: 30px;">
+                <div class="col-md-4" style="padding: 30px;">
                     <h3>Deluxe (Double)</h3>
                     <table>
                         <tr>
@@ -480,12 +512,25 @@
                         </tr>
                     </table>
                 </div>
+                <div class="col-md-4" style="padding: 40px; padding-top: 35px;">
+                <h4>Room Features:</h4>
+                    <div style="font-size: 17px; border: 1px solid black; padding: 10px; padding-bottom: 5px; font-style: italic;">
+                        <ul>
+                        <li>Double Bed</li>
+                        <li>1 Lawson Sofa</li>
+                        <li>2 People/Room</li>
+                        <li>32 inch digital TV</li>
+                        <li>AC from 9am to 5pm and 10pm-6am</li>
+                        <li>WiFi available 24/7</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
             <div class="row" style="background: orange; margin: 2%; border-radius: 20px;">
-                <div class="col-md-6" style="padding: 30px;">
-                    <img src="https://i.imgur.com/6Ygg842.png" title="source: imgur.com" style="width: 100%; border: 4px solid white; border-radius: 10px;"/>
+                <div class="col-md-4" style="padding: 30px;">
+                    <img src="https://i.imgur.com/6Ygg842.png" title="source: imgur.com" style="width: 100%; border: 4px solid white; border-radius: 10px; margin-top: 12px;"/>
                 </div>
-                <div class="col-md-6" style="padding: 30px;">
+                <div class="col-md-4" style="padding: 30px;">
                     <h3>Deluxe Suite</h3>
                     <table>
                         <tr>
@@ -516,6 +561,19 @@
                             </td>
                         </tr>
                     </table>
+                </div>
+                <div class="col-md-4" style="padding: 40px; padding-top: 35px;">
+                <h4>Room Features:</h4>
+                    <div style="font-size: 17px; border: 1px solid black; padding: 10px; padding-bottom: 5px; font-style: italic;">
+                        <ul>
+                            <li>Double Bed</li>
+                            <li>1 Sectional Sofa</li>
+                            <li>2 People/Room</li>
+                            <li>43 inch Smart TV with Hotstar VIP</li>
+                            <li>AC available 24/7</li>
+                            <li>WiFi available 24/7</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
             <br>

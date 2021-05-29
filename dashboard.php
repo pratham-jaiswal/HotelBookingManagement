@@ -59,6 +59,7 @@
             ?>
             <h2>Today</h2>
             <hr style='color: black; height: 1.5px;'>
+            <br>
             <?php 
             if(mysqli_num_rows($results)==0): ?>
                 <h4 style='color: grey;'>No Reservations Today!</h4>
@@ -110,6 +111,7 @@
             ?>
             <h2>Currently Reserved & Checked In</h2>
             <hr style='color: black; height: 1.5px;'>
+            <br>
             <?php 
             if(mysqli_num_rows($results)==0): ?>
                 <h4 style='color: grey;'>No Rooms Reserved Currently! or None Checked In!</h4>
@@ -155,6 +157,7 @@
             ?>
             <h2>Currently Reserved but Not Checked In</h2>
             <hr style='color: black; height: 1.5px;'>
+            <br>
             <?php 
             if(mysqli_num_rows($results)==0): ?>
                 <h4 style='color: grey;'>No Rooms Reserved Currently! or All Checked In!</h4>
@@ -186,7 +189,7 @@
                             <td style="padding-left: 20px; padding-right: 20px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;"><?=$resv['booking_id']?></td>
                             <td style="padding-left: 20px; padding-right: 20px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;"><?=$resv['price']?></td>
                             <td  style="padding-left: 20px; padding-right: 20px; padding-bottom: 10px; padding-top: 10px;">
-                                <a href="delete.php?id=<?=$resv['id']?>" class="trash"><i class="fa fa-trash-o fa-2x" aria-hidden="true" onmouseover="this.style.color='rgb(170, 0, 0)';return true;" onmouseout="this.style.color='red';return true;"  style="color: red; padding: 3px;"></i></a>
+                                <a href="delete.php?id=<?=$resv['id']?>" class="trash"><i class="fa fa-trash-o fa-2x" aria-hidden="true" onmouseover="this.style.color='rgb(170, 0, 0)';return true;" onmouseout="this.style.color='red';return true;" style="color: red; padding: 3px;"></i></a>
                             </td>
                         </tr>
                     <?php endwhile; ?>
@@ -203,6 +206,7 @@
             ?>
             <h2>Upcoming</h2>
             <hr style='color: black; height: 1.5px;'>
+            <br>
             <?php 
             if(mysqli_num_rows($results)==0): ?>
                 <h4 style='color: grey;'>No Upcoming Reservations yet!</h4>
@@ -239,7 +243,52 @@
             </table>
             <?php endif; ?>
             <br><br><br>
-
+            
+            <?php
+            date_default_timezone_set("Asia/Calcutta");
+            $dt = date('Y-m-d');
+            $sql = "SELECT * FROM bookings WHERE checkOutDate<'$dt'";
+            $results = mysqli_query($conn, $sql);
+            ?>
+            <h2>Past</h2>
+            <hr style='color: black; height: 1.5px;'>
+            <br>
+            <?php 
+            if(mysqli_num_rows($results)==0): ?>
+                <h4 style='color: grey;'>No Past Reservations</h4>
+            <?php else: ?>
+            <table style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th style="padding-left: 20px; padding-right: 20px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;">Name</th>
+                        <th style="padding-left: 20px; padding-right: 20px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;">Email</th>
+                        <th style="padding-left: 20px; padding-right: 20px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;">Username</th>
+                        <th style="padding-left: 20px; padding-right: 20px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;">Check-In Date</th>
+                        <th style="padding-left: 20px; padding-right: 20px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;">Chcek-Out Date</th>
+                        <th style="padding-left: 20px; padding-right: 20px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;">Room No.</th>
+                        <th style="padding-left: 20px; padding-right: 20px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;">Reserved On</th>
+                        <th style="padding-left: 20px; padding-right: 20px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;">Booking ID</th>
+                        <th style="padding-left: 20px; padding-right: 20px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;">Nightly Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php while($resv = mysqli_fetch_assoc($results)): ?>
+                        <tr>
+                            <td style="padding-left: 20px; padding-right: 20px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;"><?=$resv['name']?></td>
+                            <td style="padding-left: 20px; padding-right: 20px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;"><?=$resv['email']?></td>
+                            <td style="padding-left: 20px; padding-right: 20px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;"><?=$resv['username']?></td>
+                            <td style="padding-left: 20px; padding-right: 20px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;"><?=$resv['checkInDate']?></td>
+                            <td style="padding-left: 20px; padding-right: 20px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;"><?=$resv['checkOutDate']?></td>
+                            <td style="padding-left: 20px; padding-right: 20px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;"><?=$resv['room_no']?></td>
+                            <td style="padding-left: 20px; padding-right: 20px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;"><?=$resv['reserved_on']?></td>
+                            <td style="padding-left: 20px; padding-right: 20px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;"><?=$resv['booking_id']?></td>
+                            <td style="padding-left: 20px; padding-right: 20px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;"><?=$resv['price']?></td>
+                        </tr>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
+            <?php endif; ?>
+            <br><br><br>
 
             <?php
             $sql = "SELECT * FROM contactform WHERE replied = 'NO'";
@@ -247,6 +296,7 @@
             ?>
             <h2>New Contacts</h2>
             <hr style='color: black; height: 1.5px;'>
+            <br>
             <?php
             if(mysqli_num_rows($results)==0): ?>
                 <h4 style='color: grey;'>Replied to All Contacts till now!</h4>
@@ -284,6 +334,7 @@
             ?>
             <h2>Old Contacts</h2>
             <hr style='color: black; height: 1.5px;'>
+            <br>
             <?php
             if(mysqli_num_rows($results)==0): ?>
                 <h4 style='color: grey;'>Replied to No Contacts yet!</h4>
@@ -304,6 +355,84 @@
                             <td style="padding-left: 20px; padding-right: 20px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;"><?=$contact['email']?></td>
                             <td style="padding-left: 20px; padding-right: 20px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;"><?=$contact['message']?></td>
                             <td style="padding-left: 20px; padding-right: 20px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;"><?=$contact['recieved_at']?></td>
+                        </tr>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
+            <?php endif; ?>
+            <br><br><br>
+
+            <?php
+            $sql = "SELECT * FROM loginform WHERE admin = 'YES'";
+            $results = mysqli_query($conn, $sql);
+            ?>
+            <h2>Admins</h2>
+            <hr style='color: black; height: 1.5px;'>
+            <br>
+            <?php
+            if(mysqli_num_rows($results)==0): ?>
+                <h4 style='color: grey;'>No Admins!</h4>
+            <?php else: ?>
+            <table style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th style="padding-left: 20px; padding-right: 20px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;">Name</th>
+                        <th style="padding-left: 20px; padding-right: 20px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;">Email</th>
+                        <th style="padding-left: 20px; padding-right: 20px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;">Username</th>
+                        <th style="padding-left: 20px; padding-right: 20px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;">Created On</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php while($lg = mysqli_fetch_assoc($results)): ?>
+                        <tr>
+                            <td style="padding-left: 20px; padding-right: 20px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;"><?=$lg['fname'].' '.$lg['lname']?></td>
+                            <td style="padding-left: 20px; padding-right: 20px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;"><?=$lg['email']?></td>
+                            <td style="padding-left: 20px; padding-right: 20px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;"><?=$lg['username']?></td>
+                            <td style="padding-left: 20px; padding-right: 20px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;"><?=$lg['created_at']?></td>
+                            <?php if($lg['id']!=1): ?>
+                            <td style="padding-right: 5px; padding-bottom: 10px; padding-top: 10px; float: right;">
+                                <a href="update.php?usernamec=<?=$lg['username']?>" class="edit">
+                                <i class="fa fa-user-times fa-2x" onmouseover="this.style.color='rgb(170, 0, 0)';return true;" onmouseout="this.style.color='red';return true;" style="color: red;" aria-hidden="true"></i></a>
+                            </td>
+                            <?php endif; ?>
+                        </tr>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
+            <?php endif; ?>
+            <br><br><br>
+
+            <?php
+            $sql = "SELECT * FROM loginform WHERE admin = 'NO'";
+            $results = mysqli_query($conn, $sql);
+            ?>
+            <h2>Clients</h2>
+            <hr style='color: black; height: 1.5px;'>
+            <br>
+            <?php
+            if(mysqli_num_rows($results)==0): ?>
+                <h4 style='color: grey;'>No Clients!</h4>
+            <?php else: ?>
+            <table style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th style="padding-left: 20px; padding-right: 20px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;">Name</th>
+                        <th style="padding-left: 20px; padding-right: 20px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;">Email</th>
+                        <th style="padding-left: 20px; padding-right: 20px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;">Username</th>
+                        <th style="padding-left: 20px; padding-right: 20px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;">Created On</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php while($lg = mysqli_fetch_assoc($results)): ?>
+                        <tr>
+                            <td style="padding-left: 20px; padding-right: 20px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;"><?=$lg['fname'].' '.$lg['lname']?></td>
+                            <td style="padding-left: 20px; padding-right: 20px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;"><?=$lg['email']?></td>
+                            <td style="padding-left: 20px; padding-right: 20px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;"><?=$lg['username']?></td>
+                            <td style="padding-left: 20px; padding-right: 20px; padding-bottom: 10px; padding-top: 10px; border: 1px solid black;"><?=$lg['created_at']?></td>
+                            <td style="padding-right: 5px; padding-bottom: 10px; padding-top: 10px; float: right;">
+                                <a href="update.php?username=<?=$lg['username']?>" class="edit">
+                                <i class="fa fa-user-plus fa-2x" aria-hidden="true"></i></a>
+                            </td>
                         </tr>
                     <?php endwhile; ?>
                 </tbody>

@@ -1,7 +1,7 @@
 <?php
 session_start();
 if(isset($_SESSION['payDone'])){
-    $_SESSION['revRooms'] = $_SESSION["cInD"] = $_SESSION["cOutD"] = NULL;
+    $_SESSION['payDone'] = $_SESSION['revRooms'] = $_SESSION["cInD"] = $_SESSION["cOutD"] = NULL;
     header("location: home.php");
     exit();
 }

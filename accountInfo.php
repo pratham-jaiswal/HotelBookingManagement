@@ -54,7 +54,7 @@
                 }
                 ?>
                 <li class="nav-item">
-                    <a class="nav-link" href="contactt.php">Contact <i class="fa fa-envelope-o" aria-hidden="true"></i></a>
+                    <a class="nav-link" href="contact.php">Contact <i class="fa fa-envelope-o" aria-hidden="true"></i></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="logout.php">Logout <i class="fa fa-sign-out" aria-hidden="true"></i></a>
@@ -148,7 +148,7 @@
                         </div>
                         <?php else: ?>
                         <div class="col-md-1">
-                            <a href="services.php?booking_id=<?=$bk['booking_id']?>" class="services" onmouseover="this.style.color='blueviolet';return true;" onmouseout="this.style.color='purple';return true;" style="color: purple; font-size: 16.5px;">Services</a>
+                            <a href="#services.php?booking_id=<?=$bk['booking_id']?>" class="services" onmouseover="this.style.color='blueviolet';return true;" onmouseout="this.style.color='purple';return true;" style="color: purple; font-size: 16.5px;">Services</a>
                         </div>
                         <?php endif; ?>
                     </div>
