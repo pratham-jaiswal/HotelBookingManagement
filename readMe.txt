@@ -1,10 +1,14 @@
 REQUIREMENTS:
 1. Download & Install: XAMPP in C:\xampp (default)
 2. Clone this repository in C:\xampp\htdocs
-3. Run XAMPP
-4. On "Apache" and "MySQL" click "start"
-5. In your browser type "http://localhost/HotelBookingManagement/"
-6. Open the files.
+3. Run XAMPP and start "Apache" and "MySQL"
+4. Open the link "localhost/phpmyadmin/"
+5. Click on new at sidebar and create a database name "hotelbookingmanagement"
+6. After clicking database click import and select the file 
+4. Open the link "localhost/HotelBookingManagement/"
+8. Firstly register and login
+
+
 
 config.php - Configure Database
 register.php - Allows user to create an account
