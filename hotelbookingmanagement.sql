@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 28, 2021 at 05:05 PM
+-- Generation Time: May 29, 2021 at 05:58 PM
 -- Server version: 10.4.18-MariaDB
 -- PHP Version: 8.0.3
 
@@ -35,10 +35,10 @@ CREATE TABLE `bookings` (
   `checkOutDate` date NOT NULL,
   `room_no` int(11) NOT NULL,
   `room_type` varchar(25) NOT NULL,
-  `checked_in` varchar(3) NOT NULL,
+  `checked_in` varchar(3) NOT NULL DEFAULT 'NO',
   `reserved_on` datetime NOT NULL DEFAULT current_timestamp(),
   `username` varchar(50) NOT NULL,
-  `booking_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_nopad_ci NOT NULL,
+  `booking_id` varchar(50) NOT NULL,
   `price` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -54,7 +54,7 @@ CREATE TABLE `contactform` (
   `email` varchar(50) NOT NULL,
   `message` varchar(255) NOT NULL,
   `recieved_at` datetime NOT NULL DEFAULT current_timestamp(),
-  `replied` varchar(3) NOT NULL
+  `replied` varchar(3) NOT NULL DEFAULT 'NO'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -71,8 +71,15 @@ CREATE TABLE `loginform` (
   `username` varchar(50) NOT NULL,
   `password` varchar(255) NOT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
-  `admin` varchar(3) NOT NULL
+  `admin` varchar(3) NOT NULL DEFAULT 'NO'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `loginform`
+--
+
+INSERT INTO `loginform` (`id`, `fname`, `lname`, `email`, `username`, `password`, `created_at`, `admin`) VALUES
+(1, 'Pratham', 'Jaiswal', 'prathamj0502@gmail.com', 'admin', '$2y$10$hhfdE3DZIMYCs.TUwr2lY.02ybw9G4.ph7QmMfs3St7196jkgcZ..', '2021-05-29 21:24:35', 'YES');
 
 -- --------------------------------------------------------
 
@@ -82,7 +89,7 @@ CREATE TABLE `loginform` (
 
 CREATE TABLE `rooms` (
   `id` int(11) NOT NULL,
-  `room_np` int(11) NOT NULL,
+  `room_no` int(11) NOT NULL,
   `room_type` varchar(25) NOT NULL,
   `price` int(11) NOT NULL,
   `discountedPrice` int(11) NOT NULL
@@ -92,32 +99,32 @@ CREATE TABLE `rooms` (
 -- Dumping data for table `rooms`
 --
 
-INSERT INTO `rooms` (`id`, `room_np`, `room_type`, `price`, `discountedPrice`) VALUES
-(1, 101, 'Standard Single', 600, 400),
-(2, 102, 'Standard Single', 600, 400),
-(3, 103, 'Standard Single', 600, 400),
-(4, 104, 'Standard Single', 600, 400),
-(5, 105, 'Standard Single', 600, 400),
-(6, 201, 'Standard Double', 800, 700),
-(7, 202, 'Standard Double', 800, 700),
-(8, 203, 'Standard Double', 800, 700),
-(9, 204, 'Standard Double', 800, 700),
-(10, 205, 'Standard Double', 800, 700),
-(11, 301, 'Deluxe Single', 1100, 900),
-(12, 302, 'Deluxe Single', 1100, 900),
-(13, 303, 'Deluxe Single', 1100, 900),
-(14, 304, 'Deluxe Single', 1100, 900),
-(15, 305, 'Deluxe Single', 1100, 900),
-(16, 401, 'Deluxe Double', 1500, 1300),
-(17, 402, 'Deluxe Double', 1500, 1300),
-(18, 403, 'Deluxe Double', 1500, 1300),
-(19, 404, 'Deluxe Double', 1500, 1300),
-(20, 405, 'Deluxe Double', 1500, 1300),
-(21, 501, 'Deluxe Suite', 2000, 1700),
-(22, 502, 'Deluxe Suite', 2000, 1700),
-(23, 503, 'Deluxe Suite', 2000, 1700),
-(24, 504, 'Deluxe Suite', 2000, 1700),
-(25, 505, 'Deluxe Suite', 2000, 1700);
+INSERT INTO `rooms` (`id`, `room_no`, `room_type`, `price`, `discountedPrice`) VALUES
+(1, 101, 'Standard Single', 600, 0),
+(2, 102, 'Standard Single', 600, 0),
+(3, 103, 'Standard Single', 600, 0),
+(4, 104, 'Standard Single', 600, 0),
+(5, 105, 'Standard Single', 600, 0),
+(6, 201, 'Standard Double', 800, 0),
+(7, 202, 'Standard Double', 800, 0),
+(8, 203, 'Standard Double', 800, 0),
+(9, 204, 'Standard Double', 800, 0),
+(10, 205, 'Standard Double', 800, 0),
+(11, 301, 'Deluxe Single', 1100, 0),
+(12, 302, 'Deluxe Single', 1100, 0),
+(13, 303, 'Deluxe Single', 1100, 0),
+(14, 304, 'Deluxe Single', 1100, 0),
+(15, 305, 'Deluxe Single', 1100, 0),
+(16, 401, 'Deluxe Double', 1500, 0),
+(17, 402, 'Deluxe Double', 1500, 0),
+(18, 403, 'Deluxe Double', 1500, 0),
+(19, 404, 'Deluxe Double', 1500, 0),
+(20, 405, 'Deluxe Double', 1500, 0),
+(21, 501, 'Deluxe Suite', 2000, 0),
+(22, 502, 'Deluxe Suite', 2000, 0),
+(23, 503, 'Deluxe Suite', 2000, 0),
+(24, 504, 'Deluxe Suite', 2000, 0),
+(25, 505, 'Deluxe Suite', 2000, 0);
 
 --
 -- Indexes for dumped tables
@@ -140,8 +147,8 @@ ALTER TABLE `contactform`
 --
 ALTER TABLE `loginform`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `email` (`email`),
-  ADD UNIQUE KEY `username` (`username`);
+  ADD UNIQUE KEY `username` (`username`),
+  ADD UNIQUE KEY `email` (`email`);
 
 --
 -- Indexes for table `rooms`
@@ -169,7 +176,7 @@ ALTER TABLE `contactform`
 -- AUTO_INCREMENT for table `loginform`
 --
 ALTER TABLE `loginform`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `rooms`
