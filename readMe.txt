@@ -23,4 +23,3 @@ rooms.php - Admin can modify room prices or add Discounted Price
 dashboard.php - Admin can check all the reservations made by users, contactform responses, and list of all admins and clients
 update.php - Update details like checked-in, replied to contactform response, make/remove admin
 delete.php - Cancel bookings
-services.php - Servicees like Laundry, Food [Under development]
