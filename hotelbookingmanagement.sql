@@ -79,7 +79,7 @@ CREATE TABLE `loginform` (
 --
 
 INSERT INTO `loginform` (`id`, `fname`, `lname`, `email`, `username`, `password`, `created_at`, `admin`) VALUES
-(1, 'Pratham', 'Jaiswal', 'prathamj0502@gmail.com', 'admin', '$2y$10$hhfdE3DZIMYCs.TUwr2lY.02ybw9G4.ph7QmMfs3St7196jkgcZ..', '2021-05-29 21:24:35', 'YES');
+(1, 'Admin', '1', 'admin@gmail.com', 'admin', '$2y$10$hhfdE3DZIMYCs.TUwr2lY.02ybw9G4.ph7QmMfs3St7196jkgcZ..', '2021-05-29 21:24:35', 'YES');
 
 -- --------------------------------------------------------
 
