@@ -8,7 +8,7 @@ REQUIREMENTS:
 4. Open the link "localhost/HotelBookingManagement/"
 8. Now register and login
 
-
+Admin Credentials: admin, admin@123
 
 config.php - Configure Database
 
