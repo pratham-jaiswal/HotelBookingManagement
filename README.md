@@ -10,7 +10,7 @@ The Hotel Booking Management System is a web application designed to streamline 
 - **logout.php**: Allows users to log out.
 - **accountInfo.php**: Users can view their account information and all their reservations.
 - **forgotPassword.php**: Allows users to reset their account password.
-- **contactt.php**: Contact form for logged-in users to send inquiries.
+- **contact.php**: Contact form for logged-in users to send inquiries.
 - **home.php**: Users can select check-in dates and rooms for reservations.
 - **payment.php**: Payment page for completing reservations.
 - **rooms.php**: Admin can modify room prices or add discounted prices.
