@@ -1,37 +1,66 @@
-REQUIREMENTS:
-1. Download & Install: XAMPP in C:\xampp (default)
-2. Clone this repository in C:\xampp\htdocs
-3. Run XAMPP and start "Apache" and "MySQL"
-4. Open the link "localhost/phpmyadmin/"
-5. Click on new at sidebar and create a database name "hotelbookingmanagement"
-6. After clicking database click import and select the file "hotelbookingmanagement.sql"
-4. Open the link "localhost/HotelBookingManagement/"
-8. Now register and login
+# Hotel Booking Management System
 
-Admin Credentials: admin, admin@123
+The Hotel Booking Management System is a web application designed to streamline the process of booking and managing hotel reservations. It provides an intuitive interface for users to create accounts, make reservations, and manage their bookings. Administrators can manage room prices, view all reservations, respond to user inquiries, and oversee user accounts. The system includes essential features such as password recovery, contact forms, and secure payment processing to ensure a seamless experience for both guests and hotel administrators.
 
-config.php - Configure Database
+## File Descriptions
 
-register.php - Allows user to create an account
+- **config.php**: Configure the database settings.
+- **register.php**: Allows users to create an account.
+- **login.php**: Allows users to log in.
+- **logout.php**: Allows users to log out.
+- **accountInfo.php**: Users can view their account information and all their reservations.
+- **forgotPassword.php**: Allows users to reset their account password.
+- **contactt.php**: Contact form for logged-in users to send inquiries.
+- **home.php**: Users can select check-in dates and rooms for reservations.
+- **payment.php**: Payment page for completing reservations.
+- **rooms.php**: Admin can modify room prices or add discounted prices.
+- **dashboard.php**: Admin can view all reservations made by users, contact form responses, and a list of all admins and clients.
+- **update.php**: Update details such as check-in status, responses to contact form inquiries, and manage admin privileges.
+- **delete.php**: Cancel bookings.
 
-login.php - Allows user to Login
+## Admin Credentials
 
-logout.php - Allows user to logout
+- **Username:** admin
+- **Password:** admin@123
 
-accountInfo.php - The user can check his account info and all his reservations
+## Getting Started
 
-forgotPassword.php - Reset account password
+### Step 1: Download & Install XAMPP
 
-contactt.php - Contact form for logged in users
+1. Download XAMPP from [Apache Friends](https://www.apachefriends.org/).
+2. Install XAMPP in the default directory: `C:\xampp`.
 
-home.php - User can choose check in date, and rooms for reservations
+### Step 2: Clone the Repository
 
-payment.php - Payment page for reservations
+1. Clone the project repository to the `C:\xampp\htdocs\`:
+    ```sh
+    git clone https://github.com/pratham-jaiswal/HotelBookingManagement.git
+    ```
 
-rooms.php - Admin can modify room prices or add Discounted Price
+### Step 3: Start XAMPP
 
-dashboard.php - Admin can check all the reservations made by users, contactform responses, and list of all admins and clients
+1. Open XAMPP.
+2. Start the **Apache** and **MySQL** services by clicking the respective "Start" buttons.
 
-update.php - Update details like checked-in, replied to contactform response, make/remove admin
+### Step 4: Setup the Database
 
-delete.php - Cancel bookings
+1. Open your web browser and go to:
+    ```
+    localhost/phpmyadmin/
+    ```
+2. In the sidebar, click on "New" to create a new database.
+3. Name the database **hotelbookingmanagement**.
+4. After creating the database, click on the database name to open it.
+5. Go to the "Import" tab and import the `hotelbookingmanagement.sql` file.
+
+### Step 5: Launch the Application
+
+1. Open your web browser and go to:
+    ```
+    localhost/HotelBookingManagement/
+    ```
+2. Register a new account and log in to start using the Hotel Booking Management System.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/pratham-jaiswal/HotelBookingManagement/blob/main/LICENSE) file for details.
