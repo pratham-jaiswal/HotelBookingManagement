@@ -25,27 +25,12 @@ if($_SERVER['REQUEST_METHOD']=="POST"){
     else{
         $username = trim($_POST['username']);
         $password = trim($_POST['password']);
-        $sql = "SELECT id, fname, lname, email, username, password, admin FROM loginform WHERE username = ?";
-        $q = mysqli_query($conn, $sql);
-        if(!$q){
-            echo "<script>alert('An account with that username does not exist');</script>";
-        }
-    }
-}
-if(isset($_POST['forgotPassword'])){
-    session_start();
-    $_SESSION = array();
-    session_destroy();
-    header("location: forgotPassword.php");
-}
-else{
-    if(empty($err)){
         $sql = "SELECT id, fname, lname, email, username, password, admin, created_at FROM loginform WHERE username = ?";
         $stmt = mysqli_prepare($conn, $sql);
-        
+
         mysqli_stmt_bind_param($stmt, "s", $param_username);
         $param_username = $username;
-        //Try to execute this statement
+        
         if(mysqli_stmt_execute($stmt)){
             mysqli_stmt_store_result($stmt);
             if(mysqli_stmt_num_rows($stmt) == 1){
@@ -76,13 +61,18 @@ else{
                     }
                 }
             }
+            else{
+                $err = "An account with that username does not exist";
+                echo "<script>alert('$err');</script>";
+            }
         }
-    }
-    else{
-        echo "<script>alert('$err');</script>";
+        else{
+            $err = "Oops! Something went wrong. Please try again later.";
+            echo "<script>alert('$err');</script>";
+        }
+        mysqli_stmt_close($stmt);
     }
 }
-
 ?>
 
 
